@@ -35,7 +35,10 @@ Available templates:
    An interactive layered scene of 4 small rooms. Click items to reveal memories.
    Best for: anniversaries, partners, very-close-friends, love-letter-as-H5.
 
-(... other templates as added ...)
+💐 bouquet — Editable Flowers and Cards
+   可拖拽花材、自由加宝石、可改小纸片内容的互动花束。
+   Best for: birthdays, Mother's Day, thank-you gifts, friend comfort, anniversaries.
+   Positioning: 比 paper-house 轻，但比纯图片更可玩。
 ```
 
 If the user asks for details on one, read the rest of its `template.json` and show `slots` summary.
@@ -48,6 +51,8 @@ Three triggers, all valid:
 ```
 $dear-codex --template paper-house ~/Desktop/for-mia/
 $dear-codex use the paper-house template for Mia with ~/Desktop/for-mia/
+$dear-codex --template bouquet 给妈妈做一束可以拖动的花
+用 $dear-codex 的 bouquet 模板给朋友做一份生日礼物
 ```
 Skill detects an explicit template id, loads `template.json`, jumps to slot-matching.
 
@@ -401,5 +406,21 @@ Canonical authored HTML: `{baseDir}/assets/templates/paper-house/template-source
 Production + content spec (8 production rules, content organization principles, asset manifest, per-gift checklist, failure modes): `{baseDir}/assets/templates/paper-house/SPEC.md`. **Read this end-to-end before attempting to produce a paper-house gift.** The content principles are what keep the gift specific, factual, matched to the user's language style, and not over-romanticized.
 
 Asset bundle: ~149 MB zip / ~156 MB extracted: stickers, fonts, and reference examples, fetched once via `scripts/fetch-asset-bundle.sh --template paper-house`. The bundle URL and sha256 live in `template.json.asset_bundle`.
+
+Format: `h5`. Status: ready.
+
+### `bouquet` — Editable Flowers and Cards
+
+可拖拽花材、自由加宝石、可改小纸片内容的互动花束。适合生日、母亲节、感谢、朋友安慰、纪念日；比 paper-house 轻，但比纯图片更可玩。
+
+Users can choose built-in flowers/gems or ask for new florals when image generation is available. The gift is still evidence-based: paper-card text should quote or closely echo user-provided screenshots, notes, or relationship details.
+
+Canonical authored HTML: `{baseDir}/assets/templates/bouquet/template-source/mothers-day-blue-bouquet.html`.
+
+Production + content spec: `{baseDir}/assets/templates/bouquet/SPEC.md`.
+
+Preview: `{baseDir}/assets/templates/bouquet/preview.jpg`.
+
+Asset bundle: ~97 MB zip with flowers, greenery, gems, fonts, and references, fetched once via `scripts/fetch-asset-bundle.sh --template bouquet`. The bundle URL and sha256 live in `template.json.asset_bundle`.
 
 Format: `h5`. Status: ready.

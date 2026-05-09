@@ -26,8 +26,10 @@ Images attached in the chat also work — treat them as part of the intake.
 If the user wants to fill an existing pre-designed template instead of designing from scratch:
 
 ```
-$dear-codex --template paper-house ~/Desktop/for-mia/    # use a specific template
+$dear-codex --template paper-house ~/Desktop/for-mia/       # use a specific template
 用 $dear-codex 的 paper-house 模板给 Mia 做 ~/Desktop/for-mia/
+$dear-codex --template bouquet 给妈妈做一束可以拖动的花
+用 $dear-codex 的 bouquet 模板给朋友做一份生日礼物
 用 $dear-codex 看看有什么模板可以用？
 ```
 

@@ -69,6 +69,26 @@ $dear-codex
 
 什么都没有的时候，它会用 3-4 句对话慢慢问清楚你想给谁做、为什么想做。别担心像填表——它不会问 TA 的 MBTI 和生日的。
 
+### 模板模式：直接选一个已经设计好的礼物形状
+
+如果你已经知道想要哪种礼物，可以直接指定模板：
+
+```bash
+$dear-codex --template paper-house ~/Desktop/for-mia/
+$dear-codex --template bouquet 给妈妈做一束可以拖动的花
+用 $dear-codex 的 bouquet 模板给朋友做一份生日礼物
+用 $dear-codex 看看有什么模板可以用？
+```
+
+当前一等模板：
+
+| 模板 | 适合 | 预览 | 一句话 |
+|---|---|---|---|
+| `paper-house` | 伴侣、周年、很亲密的朋友、长故事 | `assets/templates/paper-house/preview.jpg` | 四个小房间，每个房间点开一段回忆。 |
+| `bouquet` | 生日、母亲节、感谢、朋友安慰、纪念日 | `assets/templates/bouquet/preview.jpg` | 可拖拽花材、自由加宝石、可改小纸片内容的互动花束。 |
+
+`bouquet` 比 paper-house 轻，但比纯图片更可玩；用户不需要理解内部 schema，只要提供收礼人素材、想要的花束感觉和几段可写进小纸片的内容。
+
 ---
 
 ## 安装
@@ -264,6 +284,26 @@ $dear-codex
 ```
 
 No context at all. It'll ask 3–4 short questions conversationally. It won't ask for the recipient's MBTI.
+
+### Template mode: choose a pre-designed gift shape
+
+If you already know the shape you want, specify a template directly:
+
+```bash
+$dear-codex --template paper-house ~/Desktop/for-mia/
+$dear-codex --template bouquet make mom a draggable bouquet
+$dear-codex use the bouquet template for a friend's birthday gift
+$dear-codex show me templates
+```
+
+First-class templates:
+
+| Template | Best for | Preview | One-liner |
+|---|---|---|---|
+| `paper-house` | anniversaries, partners, very close friends, longer stories | `assets/templates/paper-house/preview.jpg` | Four small rooms, each opening into a memory. |
+| `bouquet` | birthdays, Mother's Day, thank-you gifts, friend comfort, anniversaries | `assets/templates/bouquet/preview.jpg` | 可拖拽花材、自由加宝石、可改小纸片内容的互动花束. |
+
+`bouquet` is lighter than paper-house but more playful than a static image. The user does not need to understand the internal schema; they only provide recipient material, bouquet mood, and card-worthy details.
 
 ---
 
