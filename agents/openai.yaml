@@ -1,0 +1,8 @@
+interface:
+  display_name: "Dear Codex"
+  short_description: "Create recipient-centered digital gifts"
+  brand_color: "#7C6CF2"
+  default_prompt: "Use $dear-codex to make a thoughtful digital gift from a folder of photos, screenshots, notes, or a short recipient brief."
+
+policy:
+  allow_implicit_invocation: true

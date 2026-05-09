@@ -1,0 +1,10 @@
+.DS_Store
+node_modules/
+.env
+.env.*
+*.log
+__pycache__/
+*.pyc
+
+# Template asset bundles fetched at runtime — never commit these.
+assets/templates/*/base/
