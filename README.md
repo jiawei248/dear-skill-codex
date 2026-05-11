@@ -75,6 +75,7 @@ $dear-codex
 ```bash
 $dear-codex --template paper-house ~/Desktop/for-mia/
 $dear-codex --template bouquet 给妈妈做一束可以拖动的花
+$dear-codex --template empty-boxes 给 TA 做一组装满零食和小票的回忆盒子
 用 $dear-codex 的 bouquet 模板给朋友做一份生日礼物
 用 $dear-codex 看看有什么模板可以用？
 ```
@@ -85,8 +86,9 @@ $dear-codex --template bouquet 给妈妈做一束可以拖动的花
 |---|---|---|---|
 | `paper-house` | 伴侣、周年、很亲密的朋友、长故事 | `assets/templates/paper-house/preview.jpg` | 四个小房间，每个房间点开一段回忆。 |
 | `bouquet` | 生日、母亲节、感谢、朋友安慰、纪念日 | `assets/templates/bouquet/preview.jpg` | 可拖拽花材、自由加宝石、可改小纸片内容的互动花束。 |
+| `empty-boxes` | 伴侣、520、生日、朋友、日常小仪式 | `assets/templates/empty-boxes/preview.jpg` | 把冰箱、购物篮、纸箱和铁盒做成一圈可以翻看的回忆收藏盒。 |
 
-`bouquet` 比 paper-house 轻，但比纯图片更可玩；用户不需要理解内部 schema，只要提供收礼人素材、想要的花束感觉和几段可写进小纸片的内容。
+`bouquet` 比 paper-house 轻，但比纯图片更可玩；`empty-boxes` 更适合把具体物件、零食、小票、和好瞬间、旅行票根这类细节装进一个可翻看的互动 H5。
 
 ---
 
@@ -290,6 +292,7 @@ If you already know the shape you want, specify a template directly:
 ```bash
 $dear-codex --template paper-house ~/Desktop/for-mia/
 $dear-codex --template bouquet make mom a draggable bouquet
+$dear-codex --template empty-boxes make a snack-run memory box for Ren
 $dear-codex use the bouquet template for a friend's birthday gift
 $dear-codex show me templates
 ```
@@ -300,8 +303,9 @@ First-class templates:
 |---|---|---|---|
 | `paper-house` | anniversaries, partners, very close friends, longer stories | `assets/templates/paper-house/preview.jpg` | Four small rooms, each opening into a memory. |
 | `bouquet` | birthdays, Mother's Day, thank-you gifts, friend comfort, anniversaries | `assets/templates/bouquet/preview.jpg` | 可拖拽花材、自由加宝石、可改小纸片内容的互动花束. |
+| `empty-boxes` | partners, 520, birthdays, close friends, everyday rituals | `assets/templates/empty-boxes/preview.jpg` | Turns refrigerators, shopping baskets, cardboard boxes, and tin cases into a loop of collectible memory boxes. |
 
-`bouquet` is lighter than paper-house but more playful than a static image. The user does not need to understand the internal schema; they only provide recipient material, bouquet mood, and card-worthy details.
+`bouquet` is lighter than paper-house but more playful than a static image. `empty-boxes` is strongest when concrete objects, snacks, receipts, reconciliations, travel stubs, or repeated phrases can become collectible container collages.
 
 ---
 

@@ -30,6 +30,7 @@ $dear-codex --template paper-house ~/Desktop/for-mia/       # use a specific tem
 用 $dear-codex 的 paper-house 模板给 Mia 做 ~/Desktop/for-mia/
 $dear-codex --template bouquet 给妈妈做一束可以拖动的花
 用 $dear-codex 的 bouquet 模板给朋友做一份生日礼物
+$dear-codex --template empty-boxes 给 TA 做一个零食购物篮回忆盒
 用 $dear-codex 看看有什么模板可以用？
 ```
 
