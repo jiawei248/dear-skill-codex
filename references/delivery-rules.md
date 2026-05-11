@@ -1,6 +1,6 @@
 # Delivery Rules
 
-Complete instructions for gift delivery across all supported formats (H5, Image, Text, Text-Play), plus the Gift Self-Sufficiency Rule and Creative Note guidelines.
+Complete instructions for gift delivery across all supported formats (H5, Image, Text), plus the Gift Self-Sufficiency Rule and Creative Note guidelines.
 
 ## Gift Output And Delivery
 
@@ -11,13 +11,6 @@ Gift delivery depends on the chosen output format.
 Never tell the user which format you chose or are about to use. This applies to all formats.
 
 The user should experience the gift, not be told what kind of gift it is.
-
-For `text-play` specifically:
-
-- start the interaction directly with the opening move
-- do not preface it with meta-description of the format
-- do not announce the expected number of rounds
-- do not explain in advance what is about to happen unless the concept itself naturally includes that explanation in-world
 
 ### H5 Path
 
@@ -60,8 +53,7 @@ Recommended output handling:
 If the gift concept is inherently interactive (gacha machine, fortune cookie, mystery box, capsule toy, recipe wheel, etc.):
 
 **Format decision tree:**
-- Concept needs physical tap/swipe/drag → MUST be H5, not image
-- Concept needs chat-based back-and-forth → MUST be text-play
+- Concept needs authored tap/swipe/drag or back-and-forth interaction → MUST be H5, not image
 - Concept can resolve in one reveal after a user choice → image + immediate follow-up invitation
 
 **If format is image with an interactive concept:**
@@ -72,7 +64,7 @@ If the gift concept is inherently interactive (gacha machine, fortune cookie, my
 
 NEVER: send an interactive-concept image → wait for user to prompt you. If you built a machine, turn it on.
 
-### Text Path
+### Written Text Path
 
 If the chosen format is `text`, deliver the written artifact directly in the message channel.
 
@@ -81,20 +73,6 @@ Recommended output handling:
 - send the full written gift content directly
 - if an accompanying image exists, send the image first only when it truly supports the text rather than replacing it
 - do not force an image or H5 wrapper around a gift that is already complete as writing
-
-### Text-Play Path
-
-If the chosen format is `text-play`, the gift is the live interaction itself.
-
-Recommended output handling:
-
-- begin with a clear opening move rather than a technical explanation
-- keep the experience bounded to roughly `5-10` turns
-- keep each Codex turn to about `3-4` sentences max
-- ask for minimal user effort each turn: one word, one emoji, one choice, one short line
-- always carry the interaction toward a payoff: reveal, mini ending, callback, punchline, or reframe
-- if the user wants to stop, close gracefully and let the existing interaction count as the gift
-- do not generate files, links, or fake artifacts around it unless the concept later explicitly converts into another format
 
 Cleanup:
 
@@ -108,7 +86,7 @@ Reference:
 
 ### Gift Self-Sufficiency Rule
 
-The gift artifact (image, H5, text, or text-play) must be understandable on its own, without the delivery note.
+The gift artifact (image, H5, or text) must be understandable on its own, without the delivery note.
 
 Self-sufficiency test: if the user sees ONLY the artifact and not the accompanying text, would they understand the core return?
 
@@ -123,11 +101,6 @@ For image-format gifts specifically:
 - The image should communicate the return through visual metaphor, composition, or minimal reliable text — not through paragraphs of embedded Chinese
 - If the return requires a specific sentence to land, and that sentence is too long for reliable image generation, use H5 instead
 - The delivery note should enhance the gift, not explain it
-
-For `text-play` gifts specifically:
-- the interaction should not require an external explanation like "now imagine this is a game"
-- the opening move should make the play legible immediately
-- if the user leaves after `1-2` turns, the exchange should still feel intentional rather than broken
 
 ### Image-Text Coherence Rule
 
@@ -223,4 +196,3 @@ Casual/light daily gift:
 - Default to medium warmth when the user's style is unclear.
 - Delivery message length range: 0 words (just send the artifact) to 2-3 sentences max. Never longer.
 - The delivery language must match the user's primary language, regardless of what language these reference docs are written in.
-

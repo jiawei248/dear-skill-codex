@@ -6,7 +6,7 @@
 
 > _"亲爱的 ______，我做了一份小东西想给你。"_
 
-**dear-codex** 是一个给 Codex 用的礼物 skill。当你突然想给某个人做一份电子礼物——一张水彩画、一个可以拆开的 H5、一封信、一场 6 轮的小游戏——你把你手头有的素材丢给它，它帮你把那份心意做出来。
+**dear-codex** 是一个给 Codex 用的礼物 skill。当你突然想给某个人做一份电子礼物——一张水彩画、一个可以拆开的 H5、一封信——你把你手头有的素材丢给它，它帮你把那份心意做出来。
 
 不是每日推送，不是自动生成，不是"亲爱的用户，这是您今天的礼物"。是你自己有了灵感的那一刻，顺手跟 Codex 说一声：
 
@@ -27,7 +27,6 @@ $dear-codex ~/Desktop/for-mom/
 | **H5 互动页面** | 一个会被手指擦开的雨窗；一台只为 TA 造的复古点唱机；一个每点一下就更歪的陶艺转盘；一封要拆开三层才能看到的信 |
 | **AI 生成图片** | 一张把 TA 养的多肉画成水彩的"外婆的花园"；一张写着 TA 名字的假电影票；一张 TA 的情绪气象图 |
 | **文字礼物** | 一封仿照 TA 最喜欢那部电影结构写的信；一篇假装是 TA 自己写的日记；一段对 TA 最近状态的温柔观察 |
-| **互动文字游戏** | 一场 6 轮的 emoji 猜谜，谜底是 TA 的近况；一个把 TA 变成小剧场主角的一人游戏；一张只在聊天里展开的问答卡 |
 
 格式不是你选的——是 skill 根据你提供的素材和想表达的情感自己决定的。你只负责把你的灵感和素材丢过来。
 
@@ -125,7 +124,7 @@ $dear-codex
 | `FREESOUND_API_KEY` | H5 背景音乐搜索 |
 | `REMOVE_BG_API_KEY` | 图片抠图 |
 
-没有任何 key 的情况下，skill 会用文字、H5 和互动小游戏完成你的请求。
+没有任何 key 的情况下，skill 会用文字和 H5 礼物完成你的请求。
 
 H5 礼物部署可以在生成后手动运行，也可以在启动 Codex 前配置 `DEAR_HOST_DOMAIN`。
 
@@ -176,7 +175,7 @@ dear-codex/
 ├── SKILL.md                       # skill 入口
 ├── references/                    # 所有子阶段的参考文档
 │   ├── recipient-intake.md        # Stage 0：素材录入的三种方式
-│   ├── main-flow.md               # 总流程 + 进度播报 + text-play 规则
+│   ├── main-flow.md               # 总流程 + 进度播报 + 模板路由
 │   ├── editorial-judgment.md      # Stage 1：重量 + 叙事方向
 │   ├── gifting-ethics.md          # 给"别人"做礼物的原则
 │   ├── creative-concept.md        # Stage 2 + 2.5
@@ -224,7 +223,7 @@ dear-codex/
 
 > _"Dear ______, I made something for you."_
 
-**dear-codex** is a gift-crafting skill for Codex. When you're hit with inspiration to make a digital gift for someone specific — a watercolor painting for your mom, an interactive H5 for your best friend, a letter shaped like your partner's favorite movie, a 6-turn emoji riddle for a colleague — you hand your raw material to the skill, and it turns the thought into the thing.
+**dear-codex** is a gift-crafting skill for Codex. When you're hit with inspiration to make a digital gift for someone specific — a watercolor painting for your mom, an interactive H5 for your best friend, or a letter shaped like your partner's favorite movie — you hand your raw material to the skill, and it turns the thought into the thing.
 
 No daily pushes. No autonomous schedule. No "Dear user, here is today's gift." Just you, in your own moment of inspiration, telling Codex:
 
@@ -245,7 +244,6 @@ And getting back something you can actually send.
 | **Interactive H5** | A rain-streaked window you wipe clean to read the message; a jukebox built just for one person; a pottery wheel that gets more wobbly with each tap; a letter hidden inside three layers of wrapping |
 | **AI-generated image** | A watercolor of your mom's succulent garden; a fake movie ticket with the recipient's name on it; a mood-weather map for the day |
 | **Text artifact** | A letter written in the three-act rhythm of your partner's favorite movie; a diary in their voice; a short, specific observation about them |
-| **Interactive text-play** | A 6-turn emoji riddle whose answer is your friend's recent week; a tiny one-player play that casts them as the hero; a set of question cards that only unfold in chat |
 
 You don't pick the format. The skill picks based on the material you provide and the emotion you're trying to convey.
 
@@ -341,7 +339,7 @@ Core functionality needs no external services. These just unlock extra capabilit
 | `FREESOUND_API_KEY` | H5 background music search |
 | `REMOVE_BG_API_KEY` | Background removal for compositing |
 
-Without any keys, the skill still produces text, H5, and text-play gifts.
+Without any keys, the skill still produces text and H5 gifts.
 
 For H5 hosting, set `DEAR_HOST_DOMAIN` before starting Codex, or run the deployment helper after generation.
 
@@ -392,7 +390,7 @@ dear-codex/
 ├── SKILL.md                       # Skill entry
 ├── references/                    # Stage-by-stage reference docs
 │   ├── recipient-intake.md        # Stage 0: three intake modes
-│   ├── main-flow.md               # Overall flow + progress rules + text-play
+│   ├── main-flow.md               # Overall flow + progress rules + template routing
 │   ├── editorial-judgment.md      # Stage 1: weight + direction
 │   ├── gifting-ethics.md          # Principles for gifts-for-others
 │   ├── creative-concept.md        # Stage 2 + 2.5
