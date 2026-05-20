@@ -77,6 +77,7 @@ $dear-codex --template paper-house ~/Desktop/for-mia/
 $dear-codex --template bouquet 给妈妈做一束可以拖动的花
 $dear-codex --template empty-boxes 给 TA 做一组装满零食和小票的回忆盒子
 $dear-codex --template folder 给 TA 做一组可以打开的回忆文件夹
+$dear-codex --template draw-card 给 TA 做一台可以抽小卡的复古许愿机
 用 $dear-codex 的 bouquet 模板给朋友做一份生日礼物
 用 $dear-codex 看看有什么模板可以用？
 ```
@@ -89,8 +90,9 @@ $dear-codex --template folder 给 TA 做一组可以打开的回忆文件夹
 | `bouquet` | 生日、母亲节、感谢、朋友安慰、纪念日 | `assets/templates/bouquet/preview.jpg` | 可拖拽花材、自由加宝石、可改小纸片内容的互动花束。 |
 | `empty-boxes` | 伴侣、520、生日、朋友、日常小仪式 | `assets/templates/empty-boxes/preview.jpg` | 把冰箱、购物篮、纸箱和铁盒做成一圈可以翻看的回忆收藏盒。 |
 | `folder` | 伴侣、520、生日、朋友、关系章节 | `assets/templates/folder/preview.jpg` | 把你们的故事夹进四个可以打开的文件夹：照片、纸片、胶带和一句具体的话都各归其位。 |
+| `draw-card` | 粉丝礼物、演唱会回忆、生日、朋友玩笑 | `assets/templates/draw-card/preview.jpg` | 做一台复古抽卡许愿机：填一句歌词和关键词，转动旋钮抽出一张可以保存的小卡。 |
 
-`bouquet` 比 paper-house 轻，但比纯图片更可玩；`empty-boxes` 更适合把具体物件、零食、小票、和好瞬间、旅行票根这类细节装进一个可翻看的互动 H5；`folder` 适合把一段关系整理成几个有封壳、有标签、有证据感的章节。
+`bouquet` 比 paper-house 轻，但比纯图片更可玩；`empty-boxes` 更适合把具体物件、零食、小票、和好瞬间、旅行票根这类细节装进一个可翻看的互动 H5；`folder` 适合把一段关系整理成几个有封壳、有标签、有证据感的章节；`draw-card` 适合把一句歌词、一个关键词或一次演唱会回忆变成可保存的小卡。
 
 ---
 
@@ -296,6 +298,7 @@ $dear-codex --template paper-house ~/Desktop/for-mia/
 $dear-codex --template bouquet make mom a draggable bouquet
 $dear-codex --template empty-boxes make a snack-run memory box for Ren
 $dear-codex --template folder make a layered memory folder archive for Ren
+$dear-codex --template draw-card make a retro wish-card machine for Ren
 $dear-codex use the bouquet template for a friend's birthday gift
 $dear-codex show me templates
 ```
@@ -308,8 +311,9 @@ First-class templates:
 | `bouquet` | birthdays, Mother's Day, thank-you gifts, friend comfort, anniversaries | `assets/templates/bouquet/preview.jpg` | 可拖拽花材、自由加宝石、可改小纸片内容的互动花束. |
 | `empty-boxes` | partners, 520, birthdays, close friends, everyday rituals | `assets/templates/empty-boxes/preview.jpg` | Turns refrigerators, shopping baskets, cardboard boxes, and tin cases into a loop of collectible memory boxes. |
 | `folder` | partners, 520, birthdays, close friends, relationship chapters | `assets/templates/folder/preview.jpg` | Turns shared stories into four openable file folders layered with photos, papers, tapes, stickers, and one concrete line. |
+| `draw-card` | fan gifts, concert memories, birthdays, close friends, playful jokes | `assets/templates/draw-card/preview.jpg` | Builds a retro wish-card gacha machine: fill a lyric and memo, turn the knob, and draw a saveable card. |
 
-`bouquet` is lighter than paper-house but more playful than a static image. `empty-boxes` is strongest when concrete objects, snacks, receipts, reconciliations, travel stubs, or repeated phrases can become collectible container collages. `folder` works best when the relationship material naturally becomes chapters with tactile evidence.
+`bouquet` is lighter than paper-house but more playful than a static image. `empty-boxes` is strongest when concrete objects, snacks, receipts, reconciliations, travel stubs, or repeated phrases can become collectible container collages. `folder` works best when the relationship material naturally becomes chapters with tactile evidence. `draw-card` works when one lyric, keyword, color, or concert memory should become a collectible card.
 
 ---
 
