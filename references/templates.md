@@ -434,7 +434,7 @@ Canonical authored HTML: `{baseDir}/assets/templates/draw-card/template-source/r
 
 Production + content spec: `{baseDir}/assets/templates/draw-card/SPEC.md`. **Read this before producing a draw-card gift.** It contains the card-thesis rules, lyric limits, sticker-selection rules, and the language rule.
 
-Preview: `{baseDir}/assets/templates/draw-card/preview.jpg`.
+Preview: `{baseDir}/assets/templates/draw-card/preview.png`.
 
 Asset bundle: ~24 MB zip / ~31 MB extracted with card photos, carousel photos, stickers, lyrics, and reference assets, fetched once via `scripts/fetch-asset-bundle.sh --template draw-card`. The bundle URL and sha256 live in `template.json.asset_bundle`.
 

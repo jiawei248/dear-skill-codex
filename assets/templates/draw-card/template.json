@@ -3,7 +3,7 @@
   "aliases": ["draw_card", "draw card", "gacha-card", "wish-card", "card gacha", "fan card"],
   "name": "Draw Card — Retro Gacha Wish Machine",
   "description": "A playful Three.js H5 gift built around a retro card-drawing machine. The page opens on a neon lyric rain and a rotating pixel-photo carousel, then lets the recipient fill a short wish card with a lyric, color, style, and memo. After the wish slides into the machine, turning the side knob reveals a collectible image card that can be saved.",
-  "preview": "preview.jpg",
+  "preview": "preview.png",
   "best_for": [
     "fan-gift",
     "concert-memory",

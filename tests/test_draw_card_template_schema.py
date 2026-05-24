@@ -99,7 +99,7 @@ def test_draw_card_template_manifest_and_files_exist():
     assert manifest["id"] == "draw-card"
     assert "draw_card" in manifest["aliases"]
     assert manifest["status"] == "ready"
-    assert manifest["preview"] == "preview.jpg"
+    assert manifest["preview"] == "preview.png"
     assert (TEMPLATE_DIR / manifest["preview"]).is_file()
     assert (TEMPLATE_DIR / "demo-preview.png").is_file()
     assert manifest["canonical_html_reference"] == "template-source/retro-gacha-card.html"
@@ -201,7 +201,7 @@ def test_draw_card_registry_copy_is_discoverable():
     for text in [readme, skill, templates]:
         assert "--template draw-card" in text
 
-    assert "assets/templates/draw-card/preview.jpg" in readme
+    assert "assets/templates/draw-card/preview.png" in readme
     assert "Retro Gacha Wish Machine" in templates
     assert "scripts/fetch-asset-bundle.sh --template draw-card" in templates
 
