@@ -1,0 +1,1691 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>拼贴诗｜夏天把风寄存在草地</title>
+    <style>
+      @font-face {
+        font-family: "HongleiZhuoshu";
+        src: url("assets/fonts/鸿雷拙书简体.ttf") format("truetype");
+        font-display: block;
+      }
+
+      @font-face {
+        font-family: "QianTuXianMo";
+        src: url("assets/fonts/千图纤墨体.ttf") format("truetype");
+        font-display: block;
+      }
+
+      @font-face {
+        font-family: "WanWeiHand";
+        src: url("assets/fonts/我爱万伟伟手写体.ttf") format("truetype");
+        font-display: block;
+      }
+
+      :root {
+        --ink: #1f2119;
+        --paper: #f4ecd9;
+        --summer: #8fa56e;
+        --grass: #526b42;
+        --sun: #f1c66d;
+        --water: #9fbab2;
+        --basket: #ad866a;
+        --stage-ratio: 0.8;
+        --stage-scale: 1;
+        --scene-title-color: rgba(255, 250, 226, 0.92);
+        --scene-subtitle-color: rgba(255, 248, 224, 0.66);
+        --scene-video-filter: saturate(0.92) contrast(1.05) brightness(1.02);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        min-height: 100vh;
+        margin: 0;
+        overflow: hidden;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at 16% 14%, rgba(255, 246, 206, 0.72), transparent 26%),
+          radial-gradient(circle at 88% 76%, rgba(151, 173, 124, 0.42), transparent 34%),
+          linear-gradient(135deg, #e8ddc9 0%, #d7dcc3 48%, #aebba7 100%);
+        font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      }
+
+      button {
+        border: 0;
+        color: inherit;
+        font: inherit;
+      }
+
+      .app-shell {
+        position: relative;
+        min-height: 100vh;
+        padding: 0;
+      }
+
+      .top-actions {
+        position: fixed;
+        z-index: 80;
+        top: 22px;
+        right: 24px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .icon-button {
+        position: relative;
+        display: grid;
+        width: 44px;
+        height: 44px;
+        place-items: center;
+        cursor: pointer;
+        border: 1px solid rgba(49, 55, 39, 0.16);
+        border-radius: 999px;
+        background: rgba(250, 246, 232, 0.72);
+        box-shadow: 0 10px 28px rgba(48, 58, 41, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.74);
+        backdrop-filter: blur(14px);
+        transition: transform 160ms ease, background 160ms ease, box-shadow 160ms ease;
+      }
+
+      .icon-button:hover {
+        transform: translateY(-1px);
+        background: rgba(255, 252, 241, 0.86);
+        box-shadow: 0 14px 34px rgba(48, 58, 41, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.82);
+      }
+
+      .icon-button svg {
+        width: 20px;
+        height: 20px;
+        stroke-width: 1.9;
+      }
+
+      .stage-wrap {
+        position: fixed;
+        inset: 0;
+        width: 100vw;
+        height: 100vh;
+      }
+
+      .stage {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        border-radius: 0;
+        background: #d6dbc1;
+        box-shadow: none;
+        transform: none;
+        transform-origin: center;
+        user-select: none;
+        touch-action: none;
+      }
+
+      .stage::before {
+        position: absolute;
+        z-index: 8;
+        inset: 0;
+        pointer-events: none;
+        content: "";
+        background:
+          radial-gradient(circle at 22% 12%, rgba(255, 246, 197, 0.18), transparent 27%),
+          linear-gradient(90deg, transparent 0 27%, rgba(255, 255, 255, 0.08) 33%, transparent 43% 100%),
+          repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.032) 0 1px, transparent 1px 5px);
+        mix-blend-mode: screen;
+      }
+
+      .stage::after {
+        position: absolute;
+        z-index: 9;
+        inset: 0;
+        pointer-events: none;
+        content: "";
+        background: radial-gradient(circle, transparent 56%, rgba(21, 26, 17, 0.24) 100%);
+      }
+
+      .scene-video {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: var(--scene-video-filter);
+        transform-origin: center;
+      }
+
+      .collage-layer {
+        position: absolute;
+        z-index: 20;
+        top: 50%;
+        left: 50%;
+        width: min(100vw, calc(100svh * var(--stage-ratio)));
+        aspect-ratio: var(--stage-ratio);
+        overflow: visible;
+        transform: translate(-50%, -50%);
+        transform-origin: center;
+      }
+
+      .scene-heading {
+        position: absolute;
+        z-index: 40;
+        top: 3.8%;
+        left: 4.4%;
+        max-width: 92%;
+        margin: 0;
+        color: var(--scene-title-color);
+        font-family: "HongleiZhuoshu", "Kaiti SC", "STKaiti", "Songti SC", serif;
+        font-size: clamp(32px, calc(96px * var(--stage-scale)), 96px);
+        font-style: normal;
+        font-weight: 400;
+        letter-spacing: 0;
+        line-height: 0.98;
+        transform: rotate(-2.4deg);
+        text-shadow:
+          0 18px 42px rgba(27, 39, 22, 0.42),
+          0 1px 0 rgba(255, 255, 255, 0.4);
+      }
+
+      .scene-subtitle {
+        position: absolute;
+        z-index: 40;
+        top: 15.4%;
+        left: 7.4%;
+        color: var(--scene-subtitle-color);
+        font-family: "Kaiti SC", "STKaiti", serif;
+        font-size: clamp(16px, calc(34px * var(--stage-scale)), 30px);
+        letter-spacing: 0;
+        transform: rotate(-2.4deg);
+        text-shadow: 0 8px 22px rgba(24, 34, 19, 0.28);
+      }
+
+      .scene-subtitle.is-fragmented {
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        transform: none;
+      }
+
+      .subtitle-fragment,
+      .english-fragment {
+        position: absolute;
+        color: var(--fragment-color, var(--scene-subtitle-color));
+        font-family: var(--fragment-font, "Kaiti SC", "STKaiti", serif);
+        font-size: calc(var(--fragment-size, 28px) * var(--stage-scale));
+        font-weight: var(--fragment-weight, 400);
+        line-height: var(--fragment-line-height, 1.12);
+        letter-spacing: 0;
+        white-space: nowrap;
+        transform: rotate(var(--fragment-rot, 0deg));
+        transform-origin: left top;
+        text-shadow: 0 10px 24px rgba(5, 8, 14, 0.38);
+      }
+
+      .english-fragments {
+        position: absolute;
+        z-index: 38;
+        inset: 0;
+        pointer-events: none;
+      }
+
+      .english-fragment {
+        opacity: 0.78;
+        white-space: pre-line;
+      }
+
+      .film-layer {
+        position: absolute;
+        z-index: 18;
+        overflow: visible;
+        background: transparent;
+        box-shadow: none;
+        transform-origin: center;
+        pointer-events: none;
+      }
+
+      .film-layer img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        filter: var(--film-filter, saturate(0.92) contrast(1.02) brightness(0.98));
+        opacity: var(--film-opacity, 0.78);
+        pointer-events: none;
+      }
+
+      .word-chip {
+        position: absolute;
+        z-index: 50;
+        display: grid;
+        place-items: center;
+        width: var(--chip-w);
+        height: var(--chip-h);
+        padding: 0 14px;
+        cursor: grab;
+        color: var(--word-color);
+        font-family: var(--word-font);
+        font-size: var(--word-size);
+        font-weight: var(--word-weight);
+        letter-spacing: 0;
+        line-height: 1;
+        text-align: center;
+        text-shadow: var(--word-shadow, none);
+        white-space: nowrap;
+        transform: translate(-50%, -50%) rotate(var(--word-rot)) scale(var(--stage-scale));
+        transform-origin: center;
+        user-select: none;
+        touch-action: none;
+      }
+
+      .word-chip:active {
+        cursor: grabbing;
+      }
+
+      .word-chip img {
+        position: absolute;
+        z-index: -1;
+        inset: -13% -10%;
+        width: 120%;
+        height: 126%;
+        object-fit: fill;
+        pointer-events: none;
+        filter: drop-shadow(0 10px 7px rgba(30, 31, 24, 0.22));
+      }
+
+      .word-chip.is-selected {
+        z-index: 70;
+      }
+
+      .word-chip.is-selected::after {
+        position: absolute;
+        inset: 8px;
+        border: 1px dashed rgba(40, 52, 30, 0.42);
+        content: "";
+        pointer-events: none;
+      }
+
+      .rotate-handle {
+        position: absolute;
+        right: -14px;
+        bottom: -14px;
+        display: none;
+        width: 25px;
+        height: 25px;
+        cursor: grab;
+        border: 1px solid rgba(41, 49, 31, 0.25);
+        border-radius: 999px;
+        background: rgba(255, 253, 239, 0.9);
+        box-shadow: 0 8px 16px rgba(41, 49, 31, 0.14);
+      }
+
+      .rotate-handle::before {
+        position: absolute;
+        inset: 5px;
+        border: 1.7px solid #5b6e42;
+        border-left-color: transparent;
+        border-radius: 999px;
+        content: "";
+      }
+
+      .word-chip.is-selected .rotate-handle {
+        display: block;
+      }
+
+      .delete-chip {
+        position: absolute;
+        top: -17px;
+        right: -13px;
+        display: none;
+        width: 24px;
+        height: 24px;
+        cursor: pointer;
+        border-radius: 999px;
+        background: rgba(31, 33, 25, 0.78);
+        color: #fff9eb;
+        font-size: 17px;
+        line-height: 23px;
+        text-align: center;
+        box-shadow: 0 8px 16px rgba(31, 33, 25, 0.16);
+      }
+
+      .word-chip.is-selected .delete-chip {
+        display: block;
+      }
+
+      .basket-zone {
+        position: fixed;
+        right: 18px;
+        bottom: 8px;
+        z-index: 70;
+        width: min(36vw, 430px);
+        min-width: 330px;
+        height: min(42vh, 390px);
+        pointer-events: none;
+      }
+
+      .basket-image {
+        position: absolute;
+        z-index: 1;
+        right: 0;
+        bottom: 0;
+        width: 86%;
+        max-width: 360px;
+        min-width: 300px;
+        filter: drop-shadow(0 28px 30px rgba(57, 49, 36, 0.28));
+        cursor: pointer;
+        pointer-events: auto;
+      }
+
+      .basket-zone.is-shaking .basket-image {
+        animation: basketShake 520ms cubic-bezier(0.2, 0.85, 0.25, 1.15);
+      }
+
+      .basket-zone[data-scene="letter"] .basket-image {
+        width: 92%;
+        max-width: 420px;
+        min-width: 330px;
+        filter: drop-shadow(0 30px 24px rgba(21, 16, 12, 0.42)) saturate(0.94) sepia(0.12);
+      }
+
+      .basket-zone[data-scene="letter"] {
+        right: 4px;
+        bottom: -6px;
+        width: min(42vw, 500px);
+        min-width: 380px;
+        height: min(48vh, 440px);
+      }
+
+      .basket-words {
+        position: absolute;
+        z-index: 3;
+        right: 4px;
+        bottom: 78px;
+        width: min(72%, 285px);
+        height: 172px;
+        overflow: hidden;
+        border-radius: 28px;
+        pointer-events: auto;
+      }
+
+      .basket-words.is-shuffling .palette-word {
+        animation: wordShuffle 560ms cubic-bezier(0.17, 0.84, 0.44, 1) both;
+        animation-delay: calc(var(--shuffle-index, 0) * 8ms);
+      }
+
+      .basket-zone[data-scene="letter"] .basket-words {
+        right: 42px;
+        bottom: 66px;
+        width: min(62%, 300px);
+        height: 190px;
+        border-radius: 14px;
+      }
+
+      .palette-word {
+        position: absolute;
+        display: grid;
+        place-items: center;
+        width: var(--chip-w);
+        height: var(--chip-h);
+        padding: 0 12px;
+        cursor: grab;
+        color: var(--word-color);
+        font-family: var(--word-font);
+        font-size: var(--word-size);
+        font-weight: var(--word-weight);
+        letter-spacing: 0;
+        line-height: 1;
+        text-align: center;
+        overflow: visible;
+        white-space: nowrap;
+        transform: translate(-50%, -50%) rotate(var(--word-rot));
+        transform-origin: center;
+        user-select: none;
+        touch-action: none;
+      }
+
+      .palette-word img {
+        position: absolute;
+        z-index: -1;
+        inset: -13% -10%;
+        width: 120%;
+        height: 126%;
+        object-fit: fill;
+        pointer-events: none;
+        filter: drop-shadow(0 9px 7px rgba(32, 32, 24, 0.24));
+      }
+
+      .palette-word:nth-child(n + 55) {
+        display: none;
+      }
+
+      .basket-zone[data-scene="letter"] .palette-word:nth-child(n + 62) {
+        display: none;
+      }
+
+      .shuffle-button {
+        position: absolute;
+        right: 28px;
+        bottom: 46px;
+        z-index: 2;
+        display: grid;
+        width: 38px;
+        height: 38px;
+        place-items: center;
+        cursor: pointer;
+        border: 1px solid rgba(56, 63, 43, 0.16);
+        border-radius: 999px;
+        background: rgba(249, 243, 225, 0.82);
+        box-shadow: 0 10px 22px rgba(35, 42, 30, 0.18);
+        pointer-events: auto;
+      }
+
+      .shuffle-button svg {
+        width: 18px;
+        height: 18px;
+      }
+
+      @keyframes basketShake {
+        0%, 100% {
+          transform: translate(0, 0) rotate(0deg);
+        }
+        18% {
+          transform: translate(-8px, 2px) rotate(-2deg);
+        }
+        38% {
+          transform: translate(7px, -3px) rotate(1.8deg);
+        }
+        58% {
+          transform: translate(-4px, -1px) rotate(-1deg);
+        }
+        78% {
+          transform: translate(3px, 1px) rotate(0.6deg);
+        }
+      }
+
+      @keyframes wordShuffle {
+        0% {
+          opacity: 0;
+          transform: translate(-50%, -50%) rotate(var(--word-rot)) scale(0.72);
+        }
+        56% {
+          opacity: 1;
+          transform: translate(-50%, -50%) rotate(calc(var(--word-rot) + 7deg)) scale(1.08);
+        }
+        100% {
+          opacity: 1;
+          transform: translate(-50%, -50%) rotate(var(--word-rot)) scale(1);
+        }
+      }
+
+      .save-status {
+        position: fixed;
+        z-index: 90;
+        right: 25px;
+        top: 76px;
+        max-width: 230px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(31, 33, 25, 0.78);
+        color: #fff7e6;
+        font-size: 12px;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(-4px);
+        transition: opacity 150ms ease, transform 150ms ease;
+      }
+
+      .save-status.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .ambient-note {
+        position: fixed;
+        left: 26px;
+        bottom: 21px;
+        z-index: 20;
+        color: rgba(36, 42, 30, 0.42);
+        font-family: "Kaiti SC", "STKaiti", serif;
+        font-size: 18px;
+        pointer-events: none;
+      }
+
+      .stage[data-scene="letter"]::before {
+        background:
+          radial-gradient(circle at 50% 24%, rgba(255, 219, 150, 0.25), transparent 22%),
+          linear-gradient(115deg, rgba(194, 96, 46, 0.08), transparent 32% 100%),
+          repeating-linear-gradient(90deg, rgba(255, 229, 188, 0.028) 0 1px, transparent 1px 6px);
+        mix-blend-mode: screen;
+      }
+
+      .stage[data-scene="letter"] .scene-video {
+        transform: scale(1.08);
+      }
+
+      .stage[data-scene="letter"]::after {
+        background: radial-gradient(circle at 50% 42%, transparent 38%, rgba(7, 10, 18, 0.38) 100%);
+      }
+
+      .stage[data-scene="letter"] .scene-heading {
+        top: 4.5%;
+        left: 2.8%;
+        max-width: 88%;
+        font-family: "WanWeiHand", "HongleiZhuoshu", "Kaiti SC", "STKaiti", serif;
+        font-size: clamp(30px, calc(76px * var(--stage-scale)), 76px);
+        color: rgba(255, 220, 160, 0.94);
+        text-shadow:
+          0 20px 42px rgba(6, 8, 14, 0.62),
+          0 1px 0 rgba(255, 242, 214, 0.34);
+      }
+
+      .stage[data-scene="letter"] .scene-subtitle {
+        top: 14.2%;
+        left: 8%;
+        color: rgba(255, 225, 176, 0.72);
+        text-shadow: 0 10px 24px rgba(5, 8, 14, 0.42);
+      }
+
+      .stage[data-scene="letter"] .scene-subtitle.is-fragmented {
+        top: 0;
+        left: 0;
+        color: rgba(255, 225, 176, 0.72);
+      }
+
+      @media (max-width: 860px) {
+        body {
+          overflow: hidden;
+        }
+
+        .app-shell {
+          min-height: 100svh;
+          padding: 0;
+        }
+
+        .stage-wrap {
+          width: 100vw;
+          height: 100svh;
+        }
+
+        .collage-layer {
+          width: min(100vw, calc(100svh * var(--stage-ratio)));
+        }
+
+        .basket-zone {
+          right: -22px;
+          bottom: -14px;
+          width: 350px;
+          min-width: 350px;
+          height: 330px;
+        }
+
+        .basket-words {
+          right: 36px;
+          bottom: 82px;
+          width: 230px;
+          height: 136px;
+        }
+
+        .palette-word:nth-child(n + 43) {
+          display: none;
+        }
+
+        .ambient-note {
+          display: none;
+        }
+      }
+
+      @media (min-width: 1000px) {
+        .collage-layer {
+          width: min(78vw, calc(92svh * var(--stage-ratio)), 860px);
+        }
+
+        .basket-zone {
+          right: 18px;
+          bottom: 10px;
+          width: min(29vw, 350px);
+          min-width: 300px;
+          height: min(36vh, 330px);
+        }
+
+        .basket-image {
+          width: 82%;
+          max-width: 330px;
+          min-width: 270px;
+        }
+
+        .basket-words {
+          right: 10px;
+          bottom: 72px;
+          width: min(68%, 250px);
+          height: 148px;
+          border-radius: 24px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="top-actions">
+      <button class="icon-button" id="sceneButton" type="button" aria-label="切换场景" title="切换场景">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path d="M12 3v3" />
+          <path d="M12 18v3" />
+          <path d="M3 12h3" />
+          <path d="M18 12h3" />
+          <path d="m5.6 5.6 2.1 2.1" />
+          <path d="m16.3 16.3 2.1 2.1" />
+          <path d="m18.4 5.6-2.1 2.1" />
+          <path d="m7.7 16.3-2.1 2.1" />
+          <circle cx="12" cy="12" r="3.6" />
+        </svg>
+      </button>
+      <button class="icon-button" id="saveButton" type="button" aria-label="保存" title="保存 live 图片">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z" />
+          <path d="M17 21v-8H7v8" />
+          <path d="M7 3v5h8" />
+        </svg>
+      </button>
+    </div>
+
+    <main class="app-shell">
+      <section class="stage-wrap" aria-label="拼贴诗画布">
+        <div class="stage" id="stage">
+          <video
+            class="scene-video"
+            id="sceneVideo"
+            src="assets/generated/scene1/summer-grass-light.mp4?v=wind-2"
+            poster="assets/generated/scene1/summer-grass-poster.jpg?v=wind-2"
+            autoplay
+            muted
+            loop
+            playsinline
+          ></video>
+          <div class="collage-layer" id="collageLayer">
+            <h1 class="scene-heading" id="sceneTitle">夏天把风寄存在草地</h1>
+            <div class="scene-subtitle" id="sceneSubtitle">summer leaves its breeze in the grass</div>
+            <div class="english-fragments" id="englishFragments"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <aside class="basket-zone" aria-label="词语篮子">
+      <div class="basket-words" id="basketWords"></div>
+      <button class="shuffle-button" id="shuffleButton" type="button" aria-label="换一篮词" title="换一篮词">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path d="M16 3h5v5" />
+          <path d="M4 20 21 3" />
+          <path d="M21 16v5h-5" />
+          <path d="M15 15 21 21" />
+          <path d="M4 4l5 5" />
+        </svg>
+      </button>
+      <img class="basket-image" src="assets/generated/scene1/basket.png" alt="" />
+    </aside>
+
+    <div class="ambient-note">sunlight / receipt / grass / after school</div>
+    <div class="save-status" id="saveStatus"></div>
+
+    <script>
+      const POEM_CONFIG = window.POEM_GIFT_CONFIG || {};
+      const configArray = (key, fallback) => {
+        const value = POEM_CONFIG[key];
+        return Array.isArray(value) && value.length ? value : fallback;
+      };
+      const configValue = (key, fallback) => (
+        POEM_CONFIG[key] === undefined || POEM_CONFIG[key] === null ? fallback : POEM_CONFIG[key]
+      );
+
+      const STAGE_W = 1080;
+      const STAGE_H = 1350;
+      const PAPER_PATHS = configArray("paperPaths", [
+        "assets/generated/papers/paper-white-wide.png",
+        "assets/generated/papers/paper-offwhite.png",
+        "assets/generated/papers/paper-cream-wide.png",
+        "assets/generated/papers/paper-grid.png",
+        "assets/generated/papers/paper-blue-strip.png",
+        "assets/generated/papers/paper-lined-strip.png",
+        "assets/generated/papers/paper-kraft-strip.png",
+        "assets/generated/papers/paper-crumpled-square.png",
+        "assets/generated/papers/paper-tall-white.png",
+        "assets/generated/papers/paper-black.png"
+      ]);
+      const STARTER_PAPERS = configArray("starterPapers", [
+        "assets/generated/papers/paper-white-wide.png",
+        "assets/generated/papers/paper-grid.png",
+        "assets/generated/papers/paper-kraft-strip.png",
+        "assets/generated/papers/paper-offwhite.png",
+        "assets/generated/papers/paper-crumpled-square.png",
+        "assets/generated/papers/paper-cream-wide.png"
+      ]);
+
+      const FILM_LAYERS = [
+        { src: "assets/scene1/1.jpeg", x: 66, y: 410, w: 348, h: 354, rot: 0 },
+        { src: "assets/scene1/3.jpeg", x: 686, y: 246, w: 252, h: 448, rot: 0 },
+        { src: "assets/scene1/4.jpeg", x: 540, y: 616, w: 264, h: 468, rot: 0 }
+      ];
+
+      const MOVIE_LAYERS = [
+        { src: "assets/scene2/3.jpg", x: 594, y: 266, w: 348, h: 464, rot: -1, opacity: 0.78, filter: "saturate(0.9) contrast(1.03) sepia(0.18)" },
+        { src: "assets/scene2/4.png", x: 116, y: 468, w: 410, h: 318, rot: 0, opacity: 0.62, filter: "saturate(0.84) contrast(1.06) brightness(0.92)" },
+        { src: "assets/scene2/1.png", x: -74, y: 610, w: 540, h: 960, rot: 0, opacity: 0.72, filter: "saturate(0.9) contrast(1.06) sepia(0.1) drop-shadow(0 26px 24px rgba(6,8,14,.32))" }
+      ];
+
+      const FILM_LAYER_SETS = configArray("filmLayerSets", [FILM_LAYERS, MOVIE_LAYERS]);
+
+      const SCENES = configArray("scenes", [
+        {
+          id: "grass",
+          title: "夏天把风寄存在草地",
+          subtitle: "summer leaves its breeze in the grass",
+          video: "assets/generated/scene1/summer-grass-light.mp4?v=wind-2",
+          poster: "assets/generated/scene1/summer-grass-poster.jpg?v=wind-2",
+          basket: "assets/generated/scene1/basket.png",
+          ambient: "sunlight / receipt / grass / after school",
+          accent: "#8fa56e",
+          bg: ["#e8ddc9", "#d7dcc3", "#aebba7"],
+          titleColor: "rgba(255, 250, 226, 0.92)",
+          subtitleColor: "rgba(255, 248, 224, 0.66)",
+          videoFilter: "saturate(0.92) contrast(1.05) brightness(1.02)"
+        },
+        {
+          id: "letter",
+          title: "山海替你保存一封信",
+          subtitle: "dear you, from every shore that remembered home",
+          subtitleFragments: [
+            { lines: ["dear you."], x: 94, y: 206, size: 34, rot: 0, color: "rgba(255, 225, 176, 0.8)" },
+            { lines: ["every shore", "remembers home."], x: 520, y: 252, size: 26, lineHeight: 1.14, rot: 0, color: "rgba(255, 225, 176, 0.7)" }
+          ],
+          captionFragments: [
+            { lines: ["the sea keeps", "what paper cannot hold."], x: 764, y: 776, size: 30, lineHeight: 1.16, rot: 0, color: "rgba(255, 224, 174, 0.66)" },
+            { lines: ["moonlight returns", "without asking why."], x: 402, y: 852, size: 26, lineHeight: 1.16, rot: 0, color: "rgba(255, 235, 202, 0.62)" }
+          ],
+          video: "assets/scene2/background.mp4",
+          poster: "assets/generated/scene2/background-poster.jpg",
+          basket: "assets/scene2/box.png",
+          ambient: "qiaopi / moon tide / Teochew / Dear You",
+          accent: "#c07a4a",
+          bg: ["#141a25", "#32241d", "#8a6037"],
+          titleColor: "rgba(255, 220, 160, 0.94)",
+          subtitleColor: "rgba(255, 225, 176, 0.72)",
+          videoFilter: "saturate(0.82) contrast(1.08) brightness(0.78) sepia(0.08)"
+        }
+      ]);
+
+      const WORDS = configArray("words", [
+        "夏天", "草地", "阳光", "树影", "午后", "黄昏", "晚风", "冰汽水", "便利店", "公交站",
+        "小卖部", "绿豆汤", "西瓜", "白衬衫", "旧球鞋", "作业本", "窗台", "天台", "后座", "纸飞机",
+        "盐汽水", "洗衣粉", "雨后", "影子", "蓝色", "薄荷", "云朵", "玻璃杯", "收据", "零钱",
+        "小周", "阿宁", "小许", "李雷", "韩梅梅", "厦门", "杭州", "鼓浪屿", "五道口", "南锣鼓巷",
+        "慢慢", "忽然", "偷偷", "刚刚好", "有一点", "差不多", "像", "把", "和", "在",
+        "给", "从", "向", "等", "路过", "发呆", "迟到", "摸鱼", "下课", "散步",
+        "打翻", "晾着", "藏进", "递给", "照亮", "想念", "靠近", "醒来", "冒泡", "闪闪发光",
+        "明亮的", "潮湿的", "热烈的", "温柔的", "认真地", "轻轻地", "没关系", "第二杯半价", "今日特价", "不想上班",
+        "微信步数", "外卖到了", "过期愿望", "困成一片", "奶茶冰少", "薯条", "耳机线", "塑料袋", "电动车", "红绿灯",
+        "朋友圈", "备忘录", "撤回", "已读不回", "咕嘟咕嘟", "哗啦", "扑通", "晒成金色", "刚洗的头发", "回家的路",
+        "一小口", "三点半", "七月", "八月", "一阵风", "明天见", "坐在旁边", "没有答案", "也很好", "是真的"
+      ]);
+
+      const MOVIE_WORDS = configArray("movieWords", [
+        "给阿嬷的情书", "给阿嫲的情书", "Dear You", "郑木生", "谢南枝", "叶淑柔", "晓伟", "青年淑柔",
+        "老年南枝", "阿嬷", "阿公", "潮汕", "潮汕话", "侨批", "平安批", "下南洋", "泰国", "南洋",
+        "老屋", "木盒", "信封", "邮戳", "红封", "家己人", "月光", "海面", "江海万里", "心中念你",
+        "纸短情长", "跨洋", "山海", "灯塔", "故乡", "远方", "归来", "守望", "牵挂", "情义",
+        "报喜不报忧", "失联阿公", "平安", "淑柔吾妻", "亲启", "先生", "寄封信", "七夕", "少年模样", "咸肉",
+        "账本", "债务", "车票", "码头", "海风", "暮色", "长夜", "旧照片", "眼泪", "沉默",
+        "替", "把", "给", "向", "从", "和", "等", "寄", "找", "念",
+        "远赴", "瞒着", "守着", "翻开", "收下", "写给", "抵达", "记得", "替你", "回来",
+        "轻轻地", "慢慢地", "没说出口", "很久以前", "还在等", "不敢忘", "是真的", "别担心", "有情有义", "一路顺风",
+        "阿嫲的月亮", "南枝的花", "木生的信", "淑柔的门", "晓伟的路", "海水发亮", "一封又一封", "隔着山海", "替他爱你", "回信",
+        "饭桌", "热水壶", "拖鞋", "旧钥匙", "蓝塑料凳", "风扇", "白瓷碗", "糖纸", "雨伞", "口袋",
+        "楼梯口", "小卖铺", "电话铃", "未接来电", "手电筒", "晾衣绳", "报纸", "药盒", "米袋", "零钱罐",
+        "窗帘", "门缝", "夜班车", "候车厅", "红茶", "鱼露", "咸柠檬", "榕树下", "台风天", "潮湿墙角",
+        "旧日历", "圆珠笔", "塑料花", "蓝墨水", "车窗", "早餐店", "小票", "暂停", "重播", "走神",
+        "悄悄", "刚好", "也许", "原来", "偏偏", "认真", "荒唐", "普通", "漂亮", "冷掉的粥",
+        "换零钱", "抄地址", "买船票", "忘带伞", "等红灯", "晒被子", "偷笑", "发霉", "舍不得", "绕远路",
+        "得", "地", "被", "将", "于", "对", "由", "比", "用", "为",
+        "为了", "因为", "所以", "如果", "但是", "直到", "关于", "之间", "之外", "以后",
+        "以便", "以至于", "凭着", "顺着", "沿着", "穿过", "越过", "经过", "靠着", "朝着",
+        "温柔", "时代", "寄语", "人们", "命运", "迁徙", "现代", "新世界", "日新月异", "万家灯火",
+        "浪潮", "记忆", "共同体", "烟火气", "普通人", "远方的人", "下一代", "新生活", "世界很大", "家很小",
+        "疼痛", "怀念", "勇敢", "清醒", "柔软", "慌张", "笨拙", "丰盛", "脆弱", "明亮",
+        "酸酸的", "慢半拍", "想抱抱", "不响了", "突然懂了", "心里一热", "眼眶发潮", "好好生活", "仍然相信", "没有关系",
+        "月亮打卡", "宇宙回执", "海风迟到", "阿嬷点赞", "命运加载中", "小狗路过", "香蕉船票", "云朵复印件", "拖鞋出走", "电饭煲沉思",
+        "风在摸鱼", "月光客服", "悲伤半糖", "眼泪免邮", "回忆置顶", "乡愁缓存", "爱意已读", "心事撤回", "港口发呆", "星星排队",
+        "的", "的", "的", "的", "的", "得", "地", "有", "有", "没有",
+        "路过", "路过", "正在", "已经", "还是", "只是", "也是", "不是", "可以", "不能",
+        "会", "要", "想", "让", "使", "被", "把", "把", "给", "给",
+        "在", "在", "到", "到", "从", "从", "与", "或", "及", "并且",
+        "而", "而且", "于是", "然后", "后来", "之前", "之后", "里面", "外面", "旁边",
+        "这里", "那里", "谁的", "我的", "你的", "他的", "我们的", "人间的", "旧旧的", "亮亮的"
+      ]);
+
+      const WORD_SETS = configArray("wordSets", [WORDS, MOVIE_WORDS]);
+
+      const STARTER_SETS = configArray("starterSets", [
+        [
+          ["把", 220, 382],
+          ["夏天", 360, 452],
+          ["阳光", 650, 392],
+          ["晾在", 390, 705],
+          ["草地上", 650, 680],
+          ["明天见", 520, 920]
+        ],
+        [
+          ["给阿嬷的情书", 266, 342],
+          ["谢南枝", 526, 418],
+          ["替", 718, 386],
+          ["郑木生", 382, 610],
+          ["把月光", 660, 694],
+          ["寄给", 318, 830],
+          ["叶淑柔", 554, 922],
+          ["山海", 772, 1030]
+        ]
+      ]);
+
+      const FONT_OPTIONS = configArray("fontOptions", [
+        '"Songti SC", "STSong", serif',
+        '"Kaiti SC", "STKaiti", serif',
+        '"PingFang SC", "Microsoft YaHei", sans-serif',
+        '"Hiragino Sans GB", "PingFang SC", sans-serif'
+      ]);
+
+      const COLORS = configArray("paperColors", ["#151612", "#232820", "#384022", "#5f4a35", "#122331", "#fff8e8"]);
+      const BLACK_PAPER = configValue("blackPaper", "assets/generated/papers/paper-black.png");
+      const stage = document.getElementById("stage");
+      const collageLayer = document.getElementById("collageLayer");
+      const basketZone = document.querySelector(".basket-zone");
+      const basketImage = document.querySelector(".basket-image");
+      const basketWords = document.getElementById("basketWords");
+      const shuffleButton = document.getElementById("shuffleButton");
+      const saveStatus = document.getElementById("saveStatus");
+      const sceneTitle = document.getElementById("sceneTitle");
+      const sceneSubtitle = document.getElementById("sceneSubtitle");
+      const englishFragments = document.getElementById("englishFragments");
+      const sceneVideo = document.getElementById("sceneVideo");
+      const ambientNote = document.querySelector(".ambient-note");
+
+      let zCounter = 100;
+      let wordId = 1;
+      let sceneIndex = 0;
+      let basketOffset = 0;
+      let selectedId = null;
+      let dragState = null;
+      const stageWords = [];
+      const usedWords = new Set();
+      const assetCache = new Map();
+
+      function seededRandom(seed) {
+        let value = seed % 2147483647;
+        return () => {
+          value = (value * 16807) % 2147483647;
+          return (value - 1) / 2147483646;
+        };
+      }
+
+      function hashWord(word) {
+        return Array.from(word).reduce((sum, char) => sum + char.charCodeAt(0), 17);
+      }
+
+      function wordMeta(word, index = 0) {
+        const rand = seededRandom(hashWord(word) + index * 97);
+        const len = Array.from(word).length;
+        const baseSize = len <= 2 ? 39 : len <= 4 ? 30 : len <= 6 ? 25 : 21;
+        const size = Math.round(baseSize * (0.9 + rand() * 0.3));
+        const wide = Math.max(116, Math.min(410, len * size * 0.78 + 74 + rand() * 28));
+        const tall = Math.max(56, Math.min(102, size * 1.54 + 22));
+        let paper = PAPER_PATHS[Math.floor(rand() * (PAPER_PATHS.length - 1))];
+        let color = COLORS[Math.floor(rand() * (COLORS.length - 1))];
+        if (paper.includes("paper-blue-strip")) {
+          color = "#fff7e7";
+        }
+        if (rand() > 0.9 || word.length > 5 && rand() > 0.74) {
+          paper = BLACK_PAPER;
+          color = "#fff7e7";
+        }
+        return {
+          paper,
+          color,
+          font: FONT_OPTIONS[Math.floor(rand() * FONT_OPTIONS.length)],
+          weight: rand() > 0.56 ? 700 : 500,
+          fontSize: size,
+          w: wide,
+          h: tall,
+          rot: -10 + rand() * 20
+        };
+      }
+
+      function setWordStyles(el, item, scale = 1) {
+        el.style.setProperty("--chip-w", `${item.w * scale}px`);
+        el.style.setProperty("--chip-h", `${item.h * scale}px`);
+        el.style.setProperty("--word-size", `${item.fontSize * scale}px`);
+        el.style.setProperty("--word-font", item.font);
+        el.style.setProperty("--word-weight", item.weight);
+        el.style.setProperty("--word-color", item.color);
+        el.style.setProperty("--word-rot", `${item.rot}deg`);
+        el.style.setProperty("--word-shadow", item.color === "#fff7e7" ? "0 1px 0 rgba(0,0,0,.18)" : "none");
+      }
+
+      function fitBasketMeta(meta, word) {
+        if (currentScene().id !== "letter") return meta;
+        const len = Array.from(word).length;
+        const next = { ...meta };
+        if (len >= 4) {
+          next.fontSize = Math.max(18, Math.round(next.fontSize * (len >= 7 ? 0.78 : 0.88)));
+        }
+        next.w = Math.max(next.w, Math.min(470, len * next.fontSize * 1.04 + 92));
+        next.h = Math.max(next.h, next.fontSize * 1.42 + 26);
+        return next;
+      }
+
+      function stageRect() {
+        return collageLayer.getBoundingClientRect();
+      }
+
+      function syncStageScale() {
+        const rect = stageRect();
+        collageLayer.style.setProperty("--stage-scale", String(rect.width / STAGE_W));
+      }
+
+      function syncBasketPocket() {
+        if (currentScene().id !== "letter") {
+          ["left", "top", "right", "bottom", "width", "height", "borderRadius"].forEach((prop) => {
+            basketWords.style[prop] = "";
+          });
+          return;
+        }
+        const zoneRect = basketZone.getBoundingClientRect();
+        const imageRect = basketImage.getBoundingClientRect();
+        if (!zoneRect.width || !imageRect.width) return;
+        const left = imageRect.left - zoneRect.left + imageRect.width * 0.13;
+        const top = imageRect.top - zoneRect.top + imageRect.height * 0.17;
+        const width = imageRect.width * 0.74;
+        const height = imageRect.height * 0.59;
+        basketWords.style.left = `${left}px`;
+        basketWords.style.top = `${top}px`;
+        basketWords.style.right = "auto";
+        basketWords.style.bottom = "auto";
+        basketWords.style.width = `${width}px`;
+        basketWords.style.height = `${height}px`;
+        basketWords.style.borderRadius = `${Math.max(12, imageRect.width * 0.035)}px`;
+      }
+
+      function currentScene() {
+        return SCENES[sceneIndex];
+      }
+
+      function currentWords() {
+        return WORD_SETS[sceneIndex] || WORDS;
+      }
+
+      function currentLayers() {
+        return FILM_LAYER_SETS[sceneIndex] || FILM_LAYERS;
+      }
+
+      function appendLines(el, lines) {
+        lines.forEach((line, index) => {
+          if (index) el.append(document.createElement("br"));
+          el.append(document.createTextNode(line));
+        });
+      }
+
+      function styleTextFragment(el, fragment) {
+        el.style.left = `${(fragment.x / STAGE_W) * 100}%`;
+        el.style.top = `${(fragment.y / STAGE_H) * 100}%`;
+        el.style.setProperty("--fragment-size", `${fragment.size}px`);
+        el.style.setProperty("--fragment-rot", `${fragment.rot || 0}deg`);
+        el.style.setProperty("--fragment-line-height", fragment.lineHeight || 1.12);
+        if (fragment.color) el.style.setProperty("--fragment-color", fragment.color);
+        if (fragment.font) el.style.setProperty("--fragment-font", fragment.font);
+        if (fragment.weight) el.style.setProperty("--fragment-weight", fragment.weight);
+      }
+
+      function renderSceneText(scene) {
+        sceneSubtitle.textContent = "";
+        englishFragments.textContent = "";
+        sceneSubtitle.classList.toggle("is-fragmented", Boolean(scene.subtitleFragments));
+        if (scene.subtitleFragments) {
+          scene.subtitleFragments.forEach((fragment) => {
+            const el = document.createElement("span");
+            el.className = "subtitle-fragment";
+            styleTextFragment(el, fragment);
+            appendLines(el, fragment.lines);
+            sceneSubtitle.append(el);
+          });
+        } else {
+          sceneSubtitle.textContent = scene.subtitle;
+        }
+        (scene.captionFragments || []).forEach((fragment) => {
+          const el = document.createElement("span");
+          el.className = "english-fragment";
+          styleTextFragment(el, fragment);
+          appendLines(el, fragment.lines);
+          englishFragments.append(el);
+        });
+      }
+
+      function clientToStage(clientX, clientY) {
+        const rect = stageRect();
+        return {
+          x: ((clientX - rect.left) / rect.width) * STAGE_W,
+          y: ((clientY - rect.top) / rect.height) * STAGE_H,
+          rect
+        };
+      }
+
+      function renderFilmLayers() {
+        collageLayer.querySelectorAll(".film-layer").forEach((layer) => layer.remove());
+        currentLayers().forEach((layer) => {
+          const el = document.createElement("div");
+          el.className = "film-layer";
+          el.style.left = `${(layer.x / STAGE_W) * 100}%`;
+          el.style.top = `${(layer.y / STAGE_H) * 100}%`;
+          el.style.width = `${(layer.w / STAGE_W) * 100}%`;
+          el.style.height = `${(layer.h / STAGE_H) * 100}%`;
+          el.style.transform = `rotate(${layer.rot}deg)`;
+          el.style.zIndex = layer.z || 18;
+          if (layer.opacity) el.style.setProperty("--film-opacity", layer.opacity);
+          if (layer.filter) el.style.setProperty("--film-filter", layer.filter);
+          const image = document.createElement("img");
+          image.src = layer.src;
+          image.alt = "";
+          el.append(image);
+          collageLayer.append(el);
+        });
+      }
+
+      function renderBasketWords() {
+        basketWords.textContent = "";
+        syncBasketPocket();
+        const words = currentWords();
+        const visible = words
+          .slice(basketOffset)
+          .concat(words.slice(0, basketOffset))
+          .filter((word) => !usedWords.has(word));
+        visible.forEach((word, index) => {
+          const meta = fitBasketMeta(wordMeta(word, index + basketOffset), word);
+          const rand = seededRandom(hashWord(word) + basketOffset * 31);
+          const isLetter = currentScene().id === "letter";
+          const scale = isLetter ? 0.33 + rand() * 0.08 : 0.38 + rand() * 0.11;
+          const chipW = meta.w * scale;
+          const chipH = meta.h * scale;
+          const el = document.createElement("div");
+          el.className = "palette-word";
+          el.dataset.word = word;
+          const safeX = isLetter ? Math.max(26, chipW * 0.55) : Math.max(18, chipW * 0.38);
+          const safeY = isLetter ? Math.max(20, chipH * 0.56) : Math.max(16, chipH * 0.38);
+          const pocketW = basketWords.clientWidth || 285;
+          const pocketH = basketWords.clientHeight || 176;
+          if (isLetter) {
+            const bandCount = 8;
+            const band = (index * 5 + Math.floor(rand() * 3)) % bandCount;
+            const xRand = rand();
+            const yRand = rand();
+            el.style.left = `${safeX + xRand * Math.max(1, pocketW - safeX * 2)}px`;
+            el.style.top = `${safeY + ((band + 0.16 + yRand * 0.68) / bandCount) * Math.max(1, pocketH - safeY * 2)}px`;
+          } else {
+            el.style.left = `${safeX + rand() * Math.max(1, pocketW - safeX * 2)}px`;
+            el.style.top = `${safeY + rand() * Math.max(1, pocketH - safeY * 2)}px`;
+          }
+          el.style.zIndex = String(index + 1);
+          el.style.setProperty("--shuffle-index", String(index));
+          setWordStyles(el, meta, scale);
+          const paper = document.createElement("img");
+          paper.src = meta.paper;
+          paper.alt = "";
+          el.append(paper, document.createTextNode(word));
+          el.addEventListener("pointerdown", (event) => startPaletteDrag(event, word, meta));
+          basketWords.append(el);
+        });
+      }
+
+      function createStageWord(word, meta, x, y) {
+        const item = {
+          id: `word-${wordId++}`,
+          text: word,
+          x,
+          y,
+          z: zCounter++,
+          ...meta,
+          rot: meta.rot + Math.round(-5 + Math.random() * 10)
+        };
+        stageWords.push(item);
+        const el = document.createElement("div");
+        el.className = "word-chip";
+        el.dataset.id = item.id;
+        el.style.left = `${(item.x / STAGE_W) * 100}%`;
+        el.style.top = `${(item.y / STAGE_H) * 100}%`;
+        el.style.zIndex = item.z;
+        setWordStyles(el, item, 1);
+        const paper = document.createElement("img");
+        paper.src = item.paper;
+        paper.alt = "";
+        const text = document.createTextNode(item.text);
+        const rotate = document.createElement("span");
+        rotate.className = "rotate-handle";
+        rotate.title = "旋转";
+        const del = document.createElement("button");
+        del.className = "delete-chip";
+        del.type = "button";
+        del.textContent = "×";
+        del.title = "移除";
+        del.addEventListener("pointerdown", (event) => event.stopPropagation());
+        del.addEventListener("click", (event) => {
+          event.stopPropagation();
+          removeStageWord(item.id);
+        });
+        rotate.addEventListener("pointerdown", (event) => startRotate(event, item.id));
+        el.append(paper, text, rotate, del);
+        el.addEventListener("pointerdown", (event) => startWordDrag(event, item.id));
+        el.addEventListener("wheel", (event) => {
+          event.preventDefault();
+          item.rot += event.deltaY > 0 ? 4 : -4;
+          updateWordElement(item);
+          selectWord(item.id);
+        }, { passive: false });
+        collageLayer.append(el);
+        selectWord(item.id);
+        return item;
+      }
+
+      function scaledMeta(meta, scale) {
+        return {
+          ...meta,
+          w: meta.w * scale,
+          h: meta.h * scale,
+          fontSize: meta.fontSize * scale
+        };
+      }
+
+      function starterMeta(word, index) {
+        const meta = scaledMeta(wordMeta(word, index + 300), 0.78);
+        meta.paper = STARTER_PAPERS[index % STARTER_PAPERS.length];
+        meta.color = currentScene().id === "letter" && index % 3 === 0 ? "#6f2117" : "#151612";
+        return meta;
+      }
+
+      function updateWordElement(item) {
+        const el = collageLayer.querySelector(`[data-id="${item.id}"]`);
+        if (!el) return;
+        el.style.left = `${(item.x / STAGE_W) * 100}%`;
+        el.style.top = `${(item.y / STAGE_H) * 100}%`;
+        el.style.zIndex = item.z;
+        setWordStyles(el, item, 1);
+      }
+
+      function removeStageWord(id, returnToBasket = true) {
+        const index = stageWords.findIndex((item) => item.id === id);
+        const item = stageWords[index];
+        if (index >= 0) stageWords.splice(index, 1);
+        collageLayer.querySelector(`[data-id="${id}"]`)?.remove();
+        if (selectedId === id) selectedId = null;
+        if (returnToBasket && item) {
+          usedWords.delete(item.text);
+          renderBasketWords();
+        }
+      }
+
+      function selectWord(id) {
+        selectedId = id;
+        collageLayer.querySelectorAll(".word-chip").forEach((el) => {
+          el.classList.toggle("is-selected", el.dataset.id === id);
+        });
+      }
+
+      function startPaletteDrag(event, word, meta) {
+        event.preventDefault();
+        const pos = clientToStage(event.clientX, event.clientY);
+        const item = createStageWord(word, meta, pos.x, pos.y);
+        usedWords.add(word);
+        renderBasketWords();
+        item.z = zCounter++;
+        selectWord(item.id);
+        dragState = {
+          type: "move",
+          id: item.id,
+          pointerId: event.pointerId,
+          offsetX: 0,
+          offsetY: 0
+        };
+        updateWordElement(item);
+      }
+
+      function startWordDrag(event, id, alreadyCreated = false) {
+        if (event.target.closest(".rotate-handle") || event.target.closest(".delete-chip")) return;
+        event.preventDefault();
+        const item = stageWords.find((entry) => entry.id === id);
+        if (!item) return;
+        item.z = zCounter++;
+        selectWord(id);
+        const pos = clientToStage(event.clientX, event.clientY);
+        dragState = {
+          type: "move",
+          id,
+          pointerId: event.pointerId,
+          offsetX: alreadyCreated ? 0 : pos.x - item.x,
+          offsetY: alreadyCreated ? 0 : pos.y - item.y
+        };
+        event.currentTarget.setPointerCapture?.(event.pointerId);
+        updateWordElement(item);
+      }
+
+      function startRotate(event, id) {
+        event.preventDefault();
+        event.stopPropagation();
+        const item = stageWords.find((entry) => entry.id === id);
+        if (!item) return;
+        const pos = clientToStage(event.clientX, event.clientY);
+        dragState = {
+          type: "rotate",
+          id,
+          pointerId: event.pointerId,
+          startAngle: Math.atan2(pos.y - item.y, pos.x - item.x) * 180 / Math.PI,
+          startRot: item.rot
+        };
+        event.currentTarget.setPointerCapture?.(event.pointerId);
+        selectWord(id);
+      }
+
+      window.addEventListener("pointermove", (event) => {
+        if (!dragState || event.pointerId !== dragState.pointerId) return;
+        const item = stageWords.find((entry) => entry.id === dragState.id);
+        if (!item) return;
+        const pos = clientToStage(event.clientX, event.clientY);
+        if (dragState.type === "move") {
+          item.x = Math.max(20, Math.min(STAGE_W - 20, pos.x - dragState.offsetX));
+          item.y = Math.max(20, Math.min(STAGE_H - 20, pos.y - dragState.offsetY));
+        } else {
+          const angle = Math.atan2(pos.y - item.y, pos.x - item.x) * 180 / Math.PI;
+          item.rot = dragState.startRot + angle - dragState.startAngle;
+        }
+        updateWordElement(item);
+      });
+
+      window.addEventListener("pointerup", (event) => {
+        if (dragState && event.pointerId === dragState.pointerId) {
+          if (dragState.type === "move" && isInBasket(event.clientX, event.clientY)) {
+            recycleStageWord(dragState.id);
+          }
+          dragState = null;
+        }
+      });
+
+      stage.addEventListener("pointerdown", (event) => {
+        if (event.target === stage || event.target === sceneVideo || event.target === collageLayer) {
+          selectWord(null);
+        }
+      });
+
+      function isInBasket(clientX, clientY) {
+        const rect = basketImage.getBoundingClientRect();
+        return clientX >= rect.left && clientX <= rect.right && clientY >= rect.top && clientY <= rect.bottom;
+      }
+
+      function recycleStageWord(id) {
+        const item = stageWords.find((entry) => entry.id === id);
+        if (!item) return;
+        removeStageWord(id, true);
+        pulseBasket();
+      }
+
+      function pulseBasket() {
+        basketZone.classList.remove("is-shaking");
+        basketWords.classList.remove("is-shuffling");
+        void basketZone.offsetWidth;
+        basketZone.classList.add("is-shaking");
+        basketWords.classList.add("is-shuffling");
+        clearTimeout(pulseBasket.timer);
+        pulseBasket.timer = setTimeout(() => {
+          basketZone.classList.remove("is-shaking");
+          basketWords.classList.remove("is-shuffling");
+        }, 760);
+      }
+
+      function shuffleBasket() {
+        const words = currentWords();
+        basketOffset = (basketOffset + 13 + Math.floor(Math.random() * 19)) % words.length;
+        renderBasketWords();
+        pulseBasket();
+      }
+
+      function clearStageWords() {
+        stageWords.splice(0, stageWords.length);
+        collageLayer.querySelectorAll(".word-chip").forEach((el) => el.remove());
+        selectedId = null;
+        usedWords.clear();
+      }
+
+      function seedSceneWords() {
+        clearStageWords();
+        (STARTER_SETS[sceneIndex] || []).forEach(([word, x, y], index) => {
+          const meta = starterMeta(word, index);
+          createStageWord(word, meta, x, y);
+          usedWords.add(word);
+        });
+        selectWord(null);
+      }
+
+      function applyScene(index, resetWords = true) {
+        sceneIndex = index;
+        const scene = currentScene();
+        sceneTitle.textContent = scene.title;
+        renderSceneText(scene);
+        sceneVideo.src = scene.video;
+        sceneVideo.poster = scene.poster;
+        basketImage.src = scene.basket;
+        ambientNote.textContent = scene.ambient;
+        stage.dataset.scene = scene.id;
+        basketZone.dataset.scene = scene.id;
+        document.title = `拼贴诗｜${scene.title}`;
+        document.documentElement.style.setProperty("--summer", scene.accent);
+        document.documentElement.style.setProperty("--scene-title-color", scene.titleColor);
+        document.documentElement.style.setProperty("--scene-subtitle-color", scene.subtitleColor);
+        document.documentElement.style.setProperty("--scene-video-filter", scene.videoFilter);
+        document.body.style.background = `
+          radial-gradient(circle at 16% 14%, rgba(255, 246, 206, 0.72), transparent 26%),
+          radial-gradient(circle at 88% 76%, rgba(151, 173, 124, 0.42), transparent 34%),
+          linear-gradient(135deg, ${scene.bg[0]} 0%, ${scene.bg[1]} 48%, ${scene.bg[2]} 100%)
+        `;
+        basketOffset = 0;
+        renderFilmLayers();
+        if (resetWords) seedSceneWords();
+        renderBasketWords();
+        syncStageScale();
+        sceneVideo.load();
+        sceneVideo.play().catch(() => {});
+      }
+
+      function switchScene() {
+        applyScene((sceneIndex + 1) % SCENES.length, true);
+        const scene = currentScene();
+        showStatus(scene.title, 1100);
+      }
+
+      function showStatus(text, duration = 1800) {
+        saveStatus.textContent = text;
+        saveStatus.classList.add("show");
+        clearTimeout(showStatus.timer);
+        showStatus.timer = setTimeout(() => saveStatus.classList.remove("show"), duration);
+      }
+
+      function loadImage(src) {
+        if (assetCache.has(src)) return assetCache.get(src);
+        const promise = new Promise((resolve, reject) => {
+          const image = new Image();
+          image.onload = () => resolve(image);
+          image.onerror = reject;
+          image.src = src;
+        });
+        assetCache.set(src, promise);
+        return promise;
+      }
+
+      function drawCover(ctx, source, x, y, w, h, zoom = 1) {
+        const sourceW = source.videoWidth || source.naturalWidth || source.width;
+        const sourceH = source.videoHeight || source.naturalHeight || source.height;
+        const scale = Math.max(w / sourceW, h / sourceH) * zoom;
+        const sw = w / scale;
+        const sh = h / scale;
+        const sx = (sourceW - sw) / 2;
+        const sy = (sourceH - sh) / 2;
+        ctx.drawImage(source, sx, sy, sw, sh, x, y, w, h);
+      }
+
+      function viewportSourcePoint(clientX, clientY, source, stageBounds, zoom) {
+        const sourceW = source.videoWidth || source.naturalWidth || source.width;
+        const sourceH = source.videoHeight || source.naturalHeight || source.height;
+        const scaledStageW = stageBounds.width * zoom;
+        const scaledStageH = stageBounds.height * zoom;
+        const scaledStageLeft = stageBounds.left + (stageBounds.width - scaledStageW) / 2;
+        const scaledStageTop = stageBounds.top + (stageBounds.height - scaledStageH) / 2;
+        const localX = (clientX - scaledStageLeft) / zoom;
+        const localY = (clientY - scaledStageTop) / zoom;
+        const fitScale = Math.max(stageBounds.width / sourceW, stageBounds.height / sourceH);
+        const drawnW = sourceW * fitScale;
+        const drawnH = sourceH * fitScale;
+        const offsetX = (stageBounds.width - drawnW) / 2;
+        const offsetY = (stageBounds.height - drawnH) / 2;
+        return {
+          x: (localX - offsetX) / fitScale,
+          y: (localY - offsetY) / fitScale
+        };
+      }
+
+      function drawViewportCrop(ctx, source, zoom = 1) {
+        const sourceW = source.videoWidth || source.naturalWidth || source.width;
+        const sourceH = source.videoHeight || source.naturalHeight || source.height;
+        const stageBounds = stage.getBoundingClientRect();
+        const cropBounds = collageLayer.getBoundingClientRect();
+        if (!sourceW || !sourceH || !stageBounds.width || !stageBounds.height) {
+          drawCover(ctx, source, 0, 0, STAGE_W, STAGE_H, zoom);
+          return;
+        }
+        const topLeft = viewportSourcePoint(cropBounds.left, cropBounds.top, source, stageBounds, zoom);
+        const bottomRight = viewportSourcePoint(cropBounds.right, cropBounds.bottom, source, stageBounds, zoom);
+        const sx = Math.max(0, Math.min(sourceW, topLeft.x));
+        const sy = Math.max(0, Math.min(sourceH, topLeft.y));
+        const ex = Math.max(0, Math.min(sourceW, bottomRight.x));
+        const ey = Math.max(0, Math.min(sourceH, bottomRight.y));
+        const sw = ex - sx;
+        const sh = ey - sy;
+        if (sw <= 0 || sh <= 0) {
+          drawCover(ctx, source, 0, 0, STAGE_W, STAGE_H, zoom);
+          return;
+        }
+        ctx.drawImage(source, sx, sy, sw, sh, 0, 0, STAGE_W, STAGE_H);
+      }
+
+      function drawContain(ctx, source, x, y, w, h) {
+        const sourceW = source.videoWidth || source.naturalWidth || source.width;
+        const sourceH = source.videoHeight || source.naturalHeight || source.height;
+        const scale = Math.min(w / sourceW, h / sourceH);
+        const dw = sourceW * scale;
+        const dh = sourceH * scale;
+        ctx.drawImage(source, x + (w - dw) / 2, y + (h - dh) / 2, dw, dh);
+      }
+
+      function roundedRect(ctx, x, y, w, h, radius) {
+        ctx.beginPath();
+        ctx.moveTo(x + radius, y);
+        ctx.arcTo(x + w, y, x + w, y + h, radius);
+        ctx.arcTo(x + w, y + h, x, y + h, radius);
+        ctx.arcTo(x, y + h, x, y, radius);
+        ctx.arcTo(x, y, x + w, y, radius);
+        ctx.closePath();
+      }
+
+      function drawTextFragment(ctx, fragment, fallbackColor) {
+        const lines = fragment.lines || [fragment.text || ""];
+        ctx.save();
+        ctx.translate(fragment.x, fragment.y);
+        ctx.rotate((fragment.rot || 0) * Math.PI / 180);
+        ctx.font = `${fragment.weight || 400} ${fragment.size || 28}px ${fragment.font || '"Kaiti SC", "STKaiti", serif'}`;
+        ctx.fillStyle = fragment.color || fallbackColor;
+        ctx.textBaseline = "top";
+        ctx.shadowColor = "rgba(5,8,14,.36)";
+        ctx.shadowBlur = 18;
+        lines.forEach((line, index) => {
+          ctx.fillText(line, 0, index * (fragment.size || 28) * (fragment.lineHeight || 1.12), fragment.maxWidth || 620);
+        });
+        ctx.restore();
+      }
+
+      async function drawExportFrame(ctx) {
+        const scene = currentScene();
+        ctx.clearRect(0, 0, STAGE_W, STAGE_H);
+        const videoZoom = scene.id === "letter" ? 1.08 : 1;
+        if (sceneVideo.readyState >= 2) {
+          drawViewportCrop(ctx, sceneVideo, videoZoom);
+        } else {
+          const poster = await loadImage(scene.poster);
+          drawViewportCrop(ctx, poster, videoZoom);
+        }
+
+        const gradient = ctx.createRadialGradient(STAGE_W * 0.22, STAGE_H * 0.14, 20, STAGE_W * 0.22, STAGE_H * 0.14, STAGE_W * 0.62);
+        gradient.addColorStop(0, scene.id === "letter" ? "rgba(255, 204, 130, 0.16)" : "rgba(255, 246, 196, 0.2)");
+        gradient.addColorStop(1, "rgba(255, 246, 196, 0)");
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, STAGE_W, STAGE_H);
+
+        for (const layer of currentLayers()) {
+          const image = await loadImage(layer.src);
+          ctx.save();
+          ctx.translate(layer.x + layer.w / 2, layer.y + layer.h / 2);
+          ctx.rotate(layer.rot * Math.PI / 180);
+          ctx.globalAlpha = layer.opacity || 0.78;
+          drawContain(ctx, image, -layer.w / 2, -layer.h / 2, layer.w, layer.h);
+          ctx.restore();
+        }
+
+        ctx.save();
+        ctx.translate(scene.id === "letter" ? 30 : 54, scene.id === "letter" ? 60 : 52);
+        ctx.rotate(-2.4 * Math.PI / 180);
+        ctx.font = scene.id === "letter"
+          ? '400 76px "WanWeiHand", "HongleiZhuoshu", "Kaiti SC", "STKaiti", serif'
+          : '400 96px "HongleiZhuoshu", "Kaiti SC", "STKaiti", "Songti SC", serif';
+        ctx.fillStyle = scene.titleColor;
+        ctx.textBaseline = "top";
+        ctx.shadowColor = "rgba(30,42,24,.34)";
+        ctx.shadowBlur = 30;
+        ctx.fillText(sceneTitle.textContent, 0, 0, 960);
+        ctx.restore();
+
+        if (scene.subtitleFragments) {
+          scene.subtitleFragments.forEach((fragment) => drawTextFragment(ctx, fragment, scene.subtitleColor));
+        } else {
+          ctx.save();
+          ctx.translate(80, 218);
+          ctx.rotate(-2.4 * Math.PI / 180);
+          ctx.font = '34px "Kaiti SC", "STKaiti", serif';
+          ctx.fillStyle = scene.subtitleColor;
+          ctx.textBaseline = "top";
+          ctx.shadowColor = "rgba(24,34,19,.28)";
+          ctx.shadowBlur = 18;
+          ctx.fillText(sceneSubtitle.textContent, 0, 0, 880);
+          ctx.restore();
+        }
+
+        (scene.captionFragments || []).forEach((fragment) => drawTextFragment(ctx, fragment, scene.subtitleColor));
+
+        const sorted = [...stageWords].sort((a, b) => a.z - b.z);
+        for (const item of sorted) {
+          const paper = await loadImage(item.paper);
+          ctx.save();
+          ctx.translate(item.x, item.y);
+          ctx.rotate(item.rot * Math.PI / 180);
+          ctx.shadowColor = "rgba(30,31,24,.22)";
+          ctx.shadowBlur = 14;
+          ctx.shadowOffsetY = 10;
+          ctx.drawImage(paper, -item.w * 0.6, -item.h * 0.63, item.w * 1.2, item.h * 1.26);
+          ctx.shadowColor = "transparent";
+          ctx.fillStyle = item.color;
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.font = `${item.weight} ${item.fontSize}px ${item.font}`;
+          if (item.color === "#fff7e7") {
+            ctx.shadowColor = "rgba(0,0,0,.22)";
+            ctx.shadowBlur = 1;
+            ctx.shadowOffsetY = 1;
+          }
+          ctx.fillText(item.text, 0, 1, item.w - 28);
+          ctx.restore();
+        }
+
+        const vignette = ctx.createRadialGradient(STAGE_W / 2, STAGE_H / 2, STAGE_W * 0.28, STAGE_W / 2, STAGE_H / 2, STAGE_W * 0.78);
+        vignette.addColorStop(0, "rgba(0,0,0,0)");
+        vignette.addColorStop(1, "rgba(20,25,16,.22)");
+        ctx.fillStyle = vignette;
+        ctx.fillRect(0, 0, STAGE_W, STAGE_H);
+      }
+
+      function downloadBlob(blob, filename) {
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = filename;
+        document.body.append(link);
+        link.click();
+        link.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 4000);
+      }
+
+      async function exportStill(canvas, ctx) {
+        await drawExportFrame(ctx);
+        canvas.toBlob((blob) => {
+          if (blob) downloadBlob(blob, `${currentScene().id}-collage-poem.png`);
+        }, "image/png");
+      }
+
+      async function saveLiveImage() {
+        if (document.fonts?.ready) {
+          await document.fonts.ready;
+        }
+        const canvas = document.createElement("canvas");
+        canvas.width = STAGE_W;
+        canvas.height = STAGE_H;
+        const ctx = canvas.getContext("2d");
+        showStatus("正在保存 live 图片…", 5200);
+        try {
+          if (!window.MediaRecorder || !canvas.captureStream) {
+            await exportStill(canvas, ctx);
+            showStatus("已保存 PNG");
+            return;
+          }
+          const stream = canvas.captureStream(24);
+          const mime = MediaRecorder.isTypeSupported("video/webm;codecs=vp9")
+            ? "video/webm;codecs=vp9"
+            : "video/webm";
+          const recorder = new MediaRecorder(stream, { mimeType: mime });
+          const chunks = [];
+          recorder.ondataavailable = (event) => {
+            if (event.data.size) chunks.push(event.data);
+          };
+          const done = new Promise((resolve) => {
+            recorder.onstop = resolve;
+          });
+          recorder.start();
+          const start = performance.now();
+          const tick = async () => {
+            await drawExportFrame(ctx);
+            if (performance.now() - start < 5000) {
+              requestAnimationFrame(tick);
+            } else {
+              recorder.stop();
+            }
+          };
+          await tick();
+          await done;
+          downloadBlob(new Blob(chunks, { type: mime }), `${currentScene().id}-collage-poem-live.webm`);
+          showStatus("已保存 live WebM");
+        } catch (error) {
+          console.error(error);
+          await exportStill(canvas, ctx);
+          showStatus("已保存 PNG");
+        }
+      }
+
+      shuffleButton.addEventListener("click", shuffleBasket);
+      basketImage.addEventListener("click", shuffleBasket);
+      document.getElementById("sceneButton").addEventListener("click", switchScene);
+      document.getElementById("saveButton").addEventListener("click", saveLiveImage);
+      basketImage.addEventListener("load", () => {
+        syncBasketPocket();
+        renderBasketWords();
+      });
+      window.addEventListener("resize", () => {
+        syncStageScale();
+        syncBasketPocket();
+        renderBasketWords();
+      });
+
+      const sceneParam = new URLSearchParams(location.search).get("scene") || POEM_CONFIG.initialSceneId;
+      const sceneParamIndex = sceneParam ? SCENES.findIndex((scene) => scene.id === sceneParam) : -1;
+      const configuredInitialIndex = Number.isInteger(POEM_CONFIG.initialSceneIndex) ? POEM_CONFIG.initialSceneIndex : 0;
+      const initialSceneIndex = sceneParamIndex >= 0
+        ? sceneParamIndex
+        : Math.max(0, Math.min(SCENES.length - 1, configuredInitialIndex));
+      applyScene(initialSceneIndex, true);
+    </script>
+  </body>
+</html>

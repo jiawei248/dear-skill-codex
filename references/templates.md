@@ -51,6 +51,10 @@ Available templates:
 🎴 draw-card — Retro Gacha Wish Machine
    A neon 3D card-drawing machine: fill a lyric/memo wish card, slide it into the slot, turn the knob, and save the drawn card.
    Best for: fan gifts, concert memories, birthdays, close friends, idol-postcard surprises, playful jokes.
+
+📝 poem — Film Collage Word Basket
+   A cinematic collage poem: infer a theme, choose or generate a film-textured background video, add tonal image layers, and let the recipient drag paper words into sentences.
+   Best for: poetic notes, friend comfort, movie/book reflections, birthdays, longing, light confessions.
 ```
 
 If the user asks for details on one, read the rest of its `template.json` and show `slots` summary.
@@ -68,6 +72,7 @@ $dear-codex --template bouquet 给妈妈做一束可以拖动的花
 $dear-codex --template empty-boxes 给 TA 做一个零食购物篮回忆盒
 $dear-codex --template folder 给 TA 做一组可以打开的回忆文件夹
 $dear-codex --template draw-card 给 TA 做一台可以抽小卡的复古许愿机
+$dear-codex --template poem 给 TA 做一个可以拖拽词语的电影感拼贴诗
 ```
 Skill detects an explicit template id or manifest alias, loads `template.json`, jumps to slot-matching.
 
@@ -437,6 +442,22 @@ Production + content spec: `{baseDir}/assets/templates/draw-card/SPEC.md`. **Rea
 Preview: `{baseDir}/assets/templates/draw-card/preview.png`.
 
 Asset bundle: ~24 MB zip / ~31 MB extracted with card photos, carousel photos, stickers, lyrics, and reference assets, fetched once via `scripts/fetch-asset-bundle.sh --template draw-card`. The bundle URL and sha256 live in `template.json.asset_bundle`.
+
+Format: `h5`. Status: ready.
+
+### `poem` — Film Collage Word Basket
+
+A full-screen cinematic collage poem with a looping background video, two to three tonal image layers, draggable torn-paper word chips, scene switching, and a live-image save flow. It is designed for poetic notes, friend comfort, movie/book reflections, birthdays, longing, light confessions, and aesthetic memory collages where the recipient should assemble words rather than only read a finished message.
+
+Use this template when the gift should become a playable word basket. The key production rule is theme-first media: infer a broad, real-life theme from the user's raw material before finding or generating a film-textured background video, matching still images, abundant words, repeated connectors/particles, and a paper palette that belongs to the same visual world.
+
+Canonical authored HTML: `{baseDir}/assets/templates/poem/template-source/collage-poem.html`.
+
+Production + content spec: `{baseDir}/assets/templates/poem/SPEC.md`. **Read this before producing a poem gift.** It contains the theme inference rule, background-video rules, tonal image-layer rules, word-bank density requirements, repeated particle guidance, paper-palette rule, and browser verification checklist.
+
+Preview: `{baseDir}/assets/templates/poem/preview.png`.
+
+Asset bundle: ~50 MB zip / ~65 MB extracted with videos, posters, still images, papers, fonts, and previews, fetched once via `scripts/fetch-asset-bundle.sh --template poem`. The bundle URL and sha256 live in `template.json.asset_bundle`.
 
 Format: `h5`. Status: ready.
 

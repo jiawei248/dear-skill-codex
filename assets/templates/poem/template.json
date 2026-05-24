@@ -1,0 +1,249 @@
+{
+  "id": "poem",
+  "aliases": ["collage-poem", "poem-collage", "word-basket", "拼贴诗", "poem template"],
+  "name": "Poem — Film Collage Word Basket",
+  "description": "A full-screen poetic collage H5 with a cinematic background video, two to three tonal image layers, a draggable basket of paper word chips, scene switching, and a live-image save flow. It is designed for gifts where the recipient should play with words and assemble a personal sentence on top of a beautiful film-textured landscape or realistic atmosphere.",
+  "preview": "preview.png",
+  "best_for": [
+    "poetic-note",
+    "friend-comfort",
+    "movie-or-book-reflection",
+    "birthday",
+    "longing",
+    "memory-collage",
+    "light-confession",
+    "aesthetic-h5"
+  ],
+  "tone": [
+    "poetic",
+    "cinematic",
+    "film-textured",
+    "interactive",
+    "collage",
+    "softly-real",
+    "wordplay"
+  ],
+  "format": "h5",
+  "approx_size_mb": 65,
+  "status": "ready",
+  "canonical_html_reference": "template-source/collage-poem.html",
+  "spec_doc": "SPEC.md",
+  "slots": [
+    {
+      "id": "recipient_material",
+      "type": "user_context",
+      "required": true,
+      "purpose": "Raw material used to infer the poem theme, recipient language, real-life anchors, visual mood, and word bank: photos, screenshots, notes, a one-line brief, movie/book/social-post references, or a folder of mixed source material.",
+      "accepted_inputs": [
+        "photos",
+        "chat_screenshots",
+        "social_screenshots",
+        "text",
+        "notes",
+        "folder"
+      ],
+      "grounding_rules": [
+        "If the user does not provide a clear theme, infer one from the strongest concrete motifs in the raw material before searching or generating media.",
+        "Theme titles should connect to real life but remain broad enough for many sentences to be assembled under them.",
+        "Do not invent private facts about the recipient; keep specific visible references traceable to the user's material."
+      ]
+    },
+    {
+      "id": "poem_theme_plan",
+      "type": "ai_text",
+      "required": true,
+      "purpose": "Editorial plan for the collage poem: the theme, emotional field, real-life anchors, visual direction, word-bank strategy, and paper palette.",
+      "output_fields": {
+        "theme_title": "short CJK or recipient-language title, e.g. 山海替你保存一封信",
+        "theme_subtitle": "small atmospheric English/Chinese subtitle or fragments",
+        "real_life_anchors": "places, objects, routines, names, era details, foods, tickets, weather, or phrases grounded in material",
+        "visual_mood": "film texture, landscape/realistic atmosphere, palette, light, grain, and abstraction level",
+        "background_video_prompt": "prompt/query for a beautiful HD film-textured video, preferably landscape or realistic with slight abstraction",
+        "image_search_or_generation_plan": "how to find/generate 2-3 still images that match the video's palette and theme",
+        "word_bank_strategy": "semantic clusters, everyday weird words, function-word density, and repeated connectors",
+        "paper_palette": "paper chip colors and textures that harmonize with the selected video/images"
+      },
+      "rules": [
+        "Start from user material. Only use generic poetic themes when there is no usable material and the user explicitly wants free creation.",
+        "Prefer themes with real-world handles: shore, bus stop, receipt, moonlight, kitchen table, summer grass, night train, wet street, old envelope.",
+        "Avoid overly narrow themes that can only support one sentence; the basket should support many possible poems."
+      ]
+    },
+    {
+      "id": "background_video",
+      "type": "ai_generated_video",
+      "required": true,
+      "count": "1 per scene",
+      "purpose": "The full-screen moving background. It should be found from user-provided media, searched as suitable stock/reference media, or generated from the inferred theme.",
+      "selection_rules": [
+        "If user-provided visual material exists, extract the theme and palette from it first.",
+        "If no video is provided, search for or generate a beautiful, cinematic, HD, film-grain background video that feels realistic or landscape-forward; slight abstraction is allowed.",
+        "Keep motion gentle enough that word chips remain readable.",
+        "Prefer coherent palettes: warm moon/sepia, grass/sun, rain/blue-gray, harbor/amber, or another palette grounded in the theme.",
+        "Create or select a poster image for loading/export fallback."
+      ],
+      "runtime_mapping": {
+        "filled_slot_keys": ["poem_scenes[].video", "background_media.video"],
+        "output_paths": "poem-work/media/{scene_id}-background.{mp4,webm}",
+        "runtime_global": "window.POEM_GIFT_CONFIG.scenes[].video"
+      }
+    },
+    {
+      "id": "film_image_layers",
+      "type": "ai_generated_image",
+      "required": true,
+      "count_range": [2, 3],
+      "purpose": "Two to three still images layered over the video. They should share theme, palette, grain, and emotional era with the background video.",
+      "style_rules": [
+        "Keep images tonal with the background video; avoid mixing unrelated aesthetics.",
+        "Use landscape, realistic, archival, film-still, paper-document, object, or slightly abstract images that can sit in collage space.",
+        "Do not let images fight the word chips; leave breathing room around expected starter words.",
+        "Use opacity/filter/layout to make the set feel like one visual world."
+      ],
+      "runtime_mapping": {
+        "filled_slot_keys": ["film_layer_sets", "film_layers", "collage_images"],
+        "output_paths": "poem-work/images/{scene_id}/{1..3}.{jpg,png}",
+        "runtime_global": "window.POEM_GIFT_CONFIG.filmLayerSets"
+      }
+    },
+    {
+      "id": "word_bank",
+      "type": "ai_text",
+      "required": true,
+      "count_range": [120, 220],
+      "purpose": "A rich basket of draggable words and short phrases for collage poetry.",
+      "rules": [
+        "Use many words, not a sparse keyword list; collage poetry is hard when the basket is thin.",
+        "Mix theme nouns, concrete life objects, verbs, adjectives, emotional words, place names, names/nicknames when grounded, everyday internet/life phrases, and a few absurd or funny realistic words.",
+        "Include plenty of function words and connectors: 的、地、得、在、把、给、从、向、和、与、或、而、但是、因为、所以、如果、然后、后来、之前、之后、里面、旁边.",
+        "Repeat especially useful particles/connectors such as 的、地、得、在、把、给, instead of forcing every token to appear only once.",
+        "Keep most chips short enough to fit, but include a few longer vivid phrases for surprise."
+      ],
+      "runtime_mapping": {
+        "filled_slot_keys": ["word_bank", "theme_words", "words"],
+        "runtime_global": "window.POEM_GIFT_CONFIG.words or wordSets"
+      }
+    },
+    {
+      "id": "starter_words",
+      "type": "ai_text",
+      "required": false,
+      "count_range": [5, 10],
+      "purpose": "Initial word chips already placed on the canvas, giving the recipient a playable first poem rather than an empty surface.",
+      "rules": [
+        "Starter words should form a loose line with gaps, not a finished slogan.",
+        "They should include at least one connector or particle so the recipient can continue the sentence naturally.",
+        "Keep positions inside the 1080x1350 stage coordinate system."
+      ],
+      "runtime_mapping": {
+        "filled_slot_keys": ["starter_sets", "starter_words"],
+        "runtime_global": "window.POEM_GIFT_CONFIG.starterSets"
+      }
+    },
+    {
+      "id": "paper_palette",
+      "type": "asset_picks",
+      "required": false,
+      "library_subpaths": [
+        "assets/generated/papers/",
+        "assets/papers/"
+      ],
+      "purpose": "Paper chip textures and ink colors. Pick a paper palette that harmonizes with the selected video and still images.",
+      "selection_rules": [
+        "Warm sepia/moon scenes can use cream, kraft, old letter, black, and muted blue paper.",
+        "Grass/summer scenes can use off-white, cream, kraft, soft blue, and grid papers.",
+        "Do not create a rainbow basket unless the theme itself calls for playful chaos.",
+        "Ink colors should stay readable on the chosen paper and should echo the background palette."
+      ],
+      "runtime_mapping": {
+        "filled_slot_keys": ["paper_palette"],
+        "runtime_global": "window.POEM_GIFT_CONFIG.paperPaths, starterPapers, paperColors, blackPaper"
+      }
+    },
+    {
+      "id": "poem_runtime_overrides",
+      "type": "layout_config",
+      "required": false,
+      "purpose": "Advanced direct overrides for scenes, filmLayerSets, wordSets, starterSets, paperPaths, starterPapers, paperColors, fontOptions, blackPaper, initialSceneId, and initialSceneIndex.",
+      "bounds_rule": "Film layer coordinates and starter word coordinates use the 1080x1350 stage coordinate system. Keep key text inside the visible central collage area on mobile and desktop."
+    }
+  ],
+  "asset_bundle": {
+    "local_path": "base/",
+    "url": "https://github.com/jiawei248/dear-skill/releases/download/assets-poem-v1/poem-v1.zip",
+    "sha256": "e50e60ccd2a930335692eb653f0267bae14da18056fb5f0693a290b44fd59d36",
+    "size_mb": 50,
+    "contents": [
+      "assets/generated/",
+      "assets/scene1/",
+      "assets/scene2/",
+      "assets/papers/",
+      "assets/fonts/",
+      "assets/previews/"
+    ]
+  },
+  "build_script": "template-source/build.py",
+  "build_contract": {
+    "input": "filled-slots.json containing poem_theme_plan, poem_scenes/background media, film layers, word bank, starter words, paper palette, and optional runtime overrides",
+    "cli": "python3 template-source/build.py --slots <gift-dir>/poem-work/filled-slots.json --workdir <gift-dir>/poem-work --out <gift-dir>/index.html",
+    "output": "single index.html in the gift folder",
+    "single_file": true,
+    "source_policy": "template-source/collage-poem.html is canonical and read-only; build.py writes a separate output file.",
+    "runtime_global": "window.POEM_GIFT_CONFIG",
+    "supported_runtime_groups": [
+      "scenes",
+      "filmLayerSets",
+      "words",
+      "wordSets",
+      "starterSets",
+      "paperPaths",
+      "starterPapers",
+      "paperColors",
+      "fontOptions",
+      "blackPaper",
+      "initialSceneId",
+      "initialSceneIndex"
+    ],
+    "staging_contract": {
+      "gift_dir": "./gifts/<YYYY-MM-DD>-<recipient-slug>/",
+      "workdir": "./gifts/<YYYY-MM-DD>-<recipient-slug>/poem-work/",
+      "slots": "poem-work/filled-slots.json",
+      "output": "index.html",
+      "default_asset_paths": {
+        "background_video": "poem-work/media/{scene_id}-background.{mp4,webm}",
+        "background_poster": "poem-work/media/{scene_id}-poster.{jpg,png}",
+        "film_images": "poem-work/images/{scene_id}/{1..3}.{jpg,png}",
+        "basket_image": "poem-work/media/{scene_id}-basket.png",
+        "paper_palette": "poem-work/papers/{name}.png"
+      }
+    },
+    "inline_strategy": "base64 local image/video/font paths from filled-slots.json, the workdir, the fetched base bundle, or template-source into the output HTML"
+  },
+  "activation_disclosure": {
+    "message": "这个模板会下载约 50MB 的视频、纸张、字体和拼贴图片素材。真正重要的是先从你的素材里提炼主题，再为这个主题找或生成同色调的电影感背景视频、2-3 张图片和足够丰富的词语篮子。",
+    "show_before": "fetching asset bundle or generating/searching replacement video and images",
+    "cost_notes": [
+      "Asset bundle download is about 50MB on first use.",
+      "Custom background videos may require video generation or external media search.",
+      "Custom still image layers may use image generation or careful source-image selection.",
+      "The final word bank should use the user's habitual language with the recipient and include many connectors/particles."
+    ],
+    "options": [
+      {
+        "id": "built_in_assets",
+        "label": "built-in collage poem",
+        "description": "Download the bundle, use the included grass/letter scenes and paper library, customize title, words, and starter chips."
+      },
+      {
+        "id": "custom_theme_media",
+        "label": "custom theme media",
+        "description": "Infer or accept a theme, then find or generate a matching film-textured background video, 2-3 tonal images, a large word bank, and matching paper palette."
+      },
+      {
+        "id": "text_image_fallback",
+        "label": "text/image fallback",
+        "description": "Skip the heavier H5/video path and make a static collage poem or written poem from the same theme."
+      }
+    ]
+  }
+}
